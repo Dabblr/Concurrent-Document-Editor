@@ -3,6 +3,7 @@
 ### Deliverables
 Our goal is to create a server-client system that:
 * serves simple text documents over HTTP
+* allows a user to create a new text document with an HTTP request
 * accepts updates to a document over HTTP
 * stores and maintains revision history for a document
 * allows multiple editors to work on the same document concurrently
@@ -25,13 +26,22 @@ The multi-user case can be "simulated" from a single machine:
 - [ ] send another update **U2** with an `HTTP POST` request, *also identifying **R1** as the working copy*
 - [ ] confirm that the server applied **U2** on top of **R2**, even though we sent the update while working on **R1**
 
-### Extensions
-Time allowing, we'd like to consider extending our system to:
-* store revision history for multiple documents
-    * (this feature might be easy to sneak in earlier)
+### Stretch Goals
+#### Client-Side
+##### Editing GUI
 * support a basic document editing environment in the browser
+
+##### Real-time Edition
 * allow real-time edition of documents so that users see each other's editions as they happen
     * this would likely require that we iterate on our architecture (e.g. use web sockets instead of simple HTTP)
+
+##### Undo
+Maintain undo stack on client-side.
+* simpler case: client undoes **unsaved** changes only
+* complex case: client may undo **saved** changes also
+
+##### Redo
+Implies that stack frames aren't erased when popped.
 
 ## Getting Started
 * get this repo on your machine: `git clone git@github.com:Dabblr/Concurrent-Document-Editor.git`
