@@ -28,20 +28,14 @@ The multi-user case can be "simulated" from a single machine:
 
 ### Stretch Goals
 #### Client-Side
-##### Editing GUI
-* support a basic document editing environment in the browser
-
-##### Real-time Edition
-* allow real-time edition of documents so that users see each other's editions as they happen
-    * this would likely require that we iterate on our architecture (e.g. use web sockets instead of simple HTTP)
-
-##### Undo
-Maintain undo stack on client-side.
-* simpler case: client undoes **unsaved** changes only
-* complex case: client may undo **saved** changes also
-
-##### Redo
-Implies that stack frames aren't erased when popped.
+* *Editing GUI* - support a basic document editing environment in the browser
+* *Real-time Edition* - allow real-time edition of documents so that users see each other's editions as they happen
+  * this would likely require that we iterate on our architecture (e.g. use web sockets instead of simple HTTP)
+* *Undo* - Maintain undo stack on client-side.
+  * simpler case: client undoes **unsaved** changes only
+  * complex case: client may undo **saved** changes also
+* *Redo*
+  * Implies that stack frames aren't erased when popped.
 
 ## Getting Started
 * get this repo on your machine: `git clone git@github.com:Dabblr/Concurrent-Document-Editor.git`
