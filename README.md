@@ -27,6 +27,10 @@ The multi-user case can be "simulated" from a single machine:
 - [ ] confirm that the server applied **U2** on top of **R2**, even though we sent the update while working on **R1**
 
 ### Stretch Goals
+#### Server-Side
+* *Replication* - create and manage multiple instances of server
+* *Peer-to-Peer* - explore a decentralized peer-to-peer architecture and consensus algorithms
+
 #### Client-Side
 * *Editing GUI* - support a basic document editing environment in the browser
 * *Real-time Edition* - allow real-time edition of documents so that users see each other's editions as they happen
