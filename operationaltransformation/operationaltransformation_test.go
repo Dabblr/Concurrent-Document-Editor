@@ -6,6 +6,9 @@ import (
 	ops "github.com/jcgallegdup/Concurrent-Document-Editor/operations"
 )
 
+// ------------------
+// Insertion
+// ------------------
 // Tests that a new insertion is transformed onto an older insertion if the latter occurs positionally before the former
 func TestIndirectlyDependentInsertion(t *testing.T) {
 	newIns := ops.NewInsertion(5, 'b')
@@ -15,7 +18,7 @@ func TestIndirectlyDependentInsertion(t *testing.T) {
 	t.Logf("Transforming %v onto %v => expecting %v", newIns, oldIns, expectedTransformedIns)
 	transformedIns := TransformInsertions(newIns, oldIns)
 
-	if ops.AreEqual(expectedTransformedIns, transformedIns) == false {
+	if expectedTransformedIns.Equals(transformedIns) == false {
 		t.Errorf("Transformation did not result in expected operation.\nExpected: %v\nFound: %v", expectedTransformedIns, transformedIns)
 	}
 }
@@ -28,7 +31,7 @@ func TestIndependentInsertion(t *testing.T) {
 	t.Logf("Transforming %v onto %v => expecting %v (no change)", newIns, oldIns, newIns)
 	transformedIns := TransformInsertions(newIns, oldIns)
 
-	if ops.AreEqual(newIns, transformedIns) == false {
+	if newIns.Equals(transformedIns) == false {
 		t.Errorf("Transformation failed to leave the operation %v unchanged.\nExpected: %v\nFound: %v", newIns, newIns, transformedIns)
 	}
 }
@@ -42,7 +45,7 @@ func TestDirectlyDependentInsertion(t *testing.T) {
 	t.Logf("Transforming %v onto %v => expecting %v", newIns, oldIns, expectedTransformedIns)
 	transformedIns := TransformInsertions(newIns, oldIns)
 
-	if ops.AreEqual(expectedTransformedIns, transformedIns) == false {
+	if expectedTransformedIns.Equals(transformedIns) == false {
 		t.Errorf("Transformation did not result in expected operation.\nExpected: %v\nFound: %v", expectedTransformedIns, transformedIns)
 	}
 }

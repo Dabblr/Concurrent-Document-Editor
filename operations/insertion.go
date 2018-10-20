@@ -18,9 +18,9 @@ func NewInsertion(pos int, val rune) Insertion {
 	return Insertion{pos, val}
 }
 
-// AreEqual defines what makes two Insertions equal
-func AreEqual(ins1, ins2 Insertion) bool {
-	if ins1.Pos == ins2.Pos && ins1.Val == ins2.Val {
+// Equals defines what makes two Insertions equal
+func (ins *Insertion) Equals(ins2 Insertion) bool {
+	if ins.Pos == ins2.Pos && ins.Val == ins2.Val {
 		return true
 	}
 	return false

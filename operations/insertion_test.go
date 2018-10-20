@@ -2,37 +2,37 @@ package operations
 
 import "testing"
 
-func TestEquivIfEqualFields(t *testing.T) {
+func TestInsertionEquivIfEqualFields(t *testing.T) {
 	ins1 := NewInsertion(0, 'a')
 	ins2 := NewInsertion(0, 'a')
 
-	if AreEqual(ins1, ins2) == false {
+	if ins1.Equals(ins2) == false {
 		t.Errorf("Insertions %v and %v should be considered equal.", ins1, ins2)
 	}
 }
 
-func TestEquivIfSameInstance(t *testing.T) {
+func TestInsertionEquivIfSameInstance(t *testing.T) {
 	ins1 := NewInsertion(0, 'a')
 
-	if AreEqual(ins1, ins1) == false {
+	if ins1.Equals(ins1) == false {
 		t.Errorf("Insertion %v should be considered equal to itself.", ins1)
 	}
 }
 
-func TestNotEquivIfDiffField(t *testing.T) {
+func TestInsertionNotEquivIfDiffField(t *testing.T) {
 	ins1 := NewInsertion(0, 'a')
 	ins2 := NewInsertion(1, 'a')
 
-	if AreEqual(ins1, ins2) == true {
+	if ins1.Equals(ins2) == true {
 		t.Errorf("Insertions %v and %v should NOT be considered equal.", ins1, ins2)
 	}
 }
 
-func TestNotEquivIfDiffFields(t *testing.T) {
+func TestInsertionNotEquivIfDiffFields(t *testing.T) {
 	ins1 := NewInsertion(0, 'a')
 	ins2 := NewInsertion(1, 'b')
 
-	if AreEqual(ins1, ins2) == true {
+	if ins1.Equals(ins2) == true {
 		t.Errorf("Insertions %v and %v should NOT be considered equal.", ins1, ins2)
 	}
 }
