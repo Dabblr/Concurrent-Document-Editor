@@ -3,6 +3,7 @@
 ### Deliverables
 Our goal is to create a server-client system that:
 * serves simple text documents over HTTP
+* allows a user to create a new text document with an HTTP request
 * accepts updates to a document over HTTP
 * stores and maintains revision history for a document
 * allows multiple editors to work on the same document concurrently
@@ -25,13 +26,43 @@ The multi-user case can be "simulated" from a single machine:
 - [ ] send another update **U2** with an `HTTP POST` request, *also identifying **R1** as the working copy*
 - [ ] confirm that the server applied **U2** on top of **R2**, even though we sent the update while working on **R1**
 
-### Extensions
-Time allowing, we'd like to consider extending our system to:
-* store revision history for multiple documents
-    * (this feature might be easy to sneak in earlier)
-* support a basic document editing environment in the browser
-* allow real-time edition of documents so that users see each other's editions as they happen
-    * this would likely require that we iterate on our architecture (e.g. use web sockets instead of simple HTTP)
+### Stretch Goals
+#### Server-Side
+* *Replication* - create and manage multiple instances of server
+* *Peer-to-Peer* - explore a decentralized peer-to-peer architecture and consensus algorithms
+
+#### Client-Side
+* *Editing GUI* - support a basic document editing environment in the browser
+* *Real-time Edition* - allow real-time edition of documents so that users see each other's editions as they happen
+  * this would likely require that we iterate on our architecture (e.g. use web sockets instead of simple HTTP)
+* *Undo* - Maintain undo stack on client-side.
+  * simpler case: client undoes **unsaved** changes only
+  * complex case: client may undo **saved** changes also
+* *Redo*
+  * Implies that stack frames aren't erased when popped.
 
 ## Getting Started
-* get this repo on your machine: `git clone git@github.com:Dabblr/Concurrent-Document-Editor.git`
+Get this repo on your machine: `git clone git@github.com:Dabblr/Concurrent-Document-Editor.git`
+### Git Cheat Sheet
+#### Create a New Branch
+Create a new branch **from `master`** whenever working on a new feature.
+```
+$ git checkout master
+$ git checkout -b my_name/feature_name
+```
+
+#### Update Your Branch
+To incorporate new changes in `master` to your branch, merge master into your branch:
+```
+# First, make sure your local copy of the master branch is up to date
+$ git checkout master
+$ git pull
+# Then, merge it into your branch
+$ git checkout my_name/feature_name
+$ git merge master
+```
+
+#### Merge to `master`
+**NOTE**: First, make sure you've updated your branch with the latest master (see previous section).
+
+Open a PR to present your changes with a brief description as necessary. Approvals are always good, but no necessary: merge if no one has time to take a look. Use the big green button on the PR page.
