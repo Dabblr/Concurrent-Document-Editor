@@ -49,3 +49,45 @@ func TestDirectlyDependentInsertion(t *testing.T) {
 		t.Errorf("Transformation did not result in expected operation.\nExpected: %v\nFound: %v", expectedTransformedIns, transformedIns)
 	}
 }
+
+// ------------------
+// Deletion
+// ------------------
+// Tests that a new deletion is transformed onto an older deletion if the latter occurs positionally before the former
+func TestDeletionTransformed(t *testing.T) {
+	newDel := ops.NewDeletion(5)
+	oldDel := ops.NewDeletion(0)
+	expectedTransformedDel := ops.NewDeletion(4)
+
+	t.Logf("Transforming %v onto %v => expecting %v", newDel, oldDel, expectedTransformedDel)
+	transformedDel, err := TransformDeletions(newDel, oldDel)
+
+	if expectedTransformedDel.Equals(transformedDel) == false || err != nil {
+		t.Errorf("Transformation did not result in expected operation.\nExpected: %v\nFound: %v", expectedTransformedDel, transformedDel)
+	}
+}
+
+// Tests that a new deletion is NOT transformed onto an older deletion if the latter occurs positionally after the former
+func TestDeletionNotTransformed(t *testing.T) {
+	newDel := ops.NewDeletion(0)
+	oldDel := ops.NewDeletion(5)
+
+	t.Logf("Transforming %v onto %v => expecting %v (no change)", newDel, oldDel, newDel)
+	transformedDel, err := TransformDeletions(newDel, oldDel)
+
+	if newDel.Equals(transformedDel) == false || err != nil {
+		t.Errorf("Transformation failed to leave the operation %v unchanged.\nExpected: %v\nFound: %v", newDel, newDel, transformedDel)
+	}
+}
+
+// Tests that a new deletion is transformed onto an older deletion if they occur at the same position
+func TestDuplicateDeletionCausesError(t *testing.T) {
+	newDel := ops.NewDeletion(1)
+
+	t.Logf("Transforming %v onto %v => expecting error.", newDel, newDel)
+	transformedDel, err := TransformDeletions(newDel, newDel)
+
+	if err == nil {
+		t.Errorf("Expected transformation to produce error, but it was <nil>.\nTranformed Operation: %v", transformedDel)
+	}
+}
