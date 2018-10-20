@@ -1,4 +1,4 @@
-package operationaltransformation
+package operations
 
 import "testing"
 
@@ -42,7 +42,7 @@ func TestInsertionConstructor(t *testing.T) {
 	ins := NewInsertion(123, 'x')
 	expIns := Insertion{123, 'x'}
 
-	if ins.pos != 123 || ins.val != 'x' {
+	if ins.Pos != 123 || ins.Val != 'x' {
 		t.Errorf("Expected %v from Insertion constructor but got %v", expIns, ins)
 	}
 }

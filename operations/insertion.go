@@ -1,4 +1,4 @@
-package operationaltransformation
+package operations
 
 import "fmt"
 
@@ -9,8 +9,8 @@ import "fmt"
 // e.g. Insertion={1, 'z'} for string "oo" => "ozo"
 // e.g. Insertion={2, 'z'} for string "oo" => "ooz"
 type Insertion struct {
-	pos int
-	val rune
+	Pos int
+	Val rune
 }
 
 // NewInsertion is a constructor for the Insertion type
@@ -20,7 +20,7 @@ func NewInsertion(pos int, val rune) Insertion {
 
 // AreEqual defines what makes two Insertions equal
 func AreEqual(ins1, ins2 Insertion) bool {
-	if ins1.pos == ins2.pos && ins1.val == ins2.val {
+	if ins1.Pos == ins2.Pos && ins1.Val == ins2.Val {
 		return true
 	}
 	return false
@@ -28,5 +28,5 @@ func AreEqual(ins1, ins2 Insertion) bool {
 
 // String implements the Stringer interface
 func (ins *Insertion) String() string {
-	return fmt.Sprintf("Ins: pos=%v val=%v", ins.pos, ins.val)
+	return fmt.Sprintf("Ins: pos=%v val=%v", ins.Pos, ins.Val)
 }
