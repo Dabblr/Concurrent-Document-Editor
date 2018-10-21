@@ -16,7 +16,7 @@ func TransformInsertions(newIns, prev ops.Insertion) ops.Insertion {
 }
 
 // TransformDeletions transforms the a new deletion operation on top of a previous deletion operation
-// e.g. (Del{3, 'a'}, Del{1, 'b'}) => Del{2, 'a'}
+// e.g. (Del{3}, Del{1}) => Del{2}
 // An error is returned if the two deletions have the same position, since
 // newDel's target character has already been deleted.
 func TransformDeletions(newDel, prev ops.Deletion) (ops.Deletion, error) {
@@ -24,7 +24,7 @@ func TransformDeletions(newDel, prev ops.Deletion) (ops.Deletion, error) {
 		return ops.NewDeletion(newDel.Pos - 1), nil
 
 	} else if prev.Pos == newDel.Pos {
-		return newDel, errors.New("Prob")
+		return newDel, errors.New("cannot transform deletion onto duplicate deletion")
 	}
 	return newDel, nil
 }

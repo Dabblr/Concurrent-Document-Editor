@@ -7,9 +7,9 @@ import (
 )
 
 // ------------------
-// Insertion
+// Insertion onto Insertion
 // ------------------
-// Tests that a new insertion is transformed onto an older insertion if the latter occurs positionally before the former
+// Tests that a new insertion is changed when transformed onto another insertion that occurs at an earlier position
 func TestIndirectlyDependentInsertion(t *testing.T) {
 	newIns := ops.NewInsertion(5, 'b')
 	oldIns := ops.NewInsertion(0, 'a')
@@ -23,7 +23,7 @@ func TestIndirectlyDependentInsertion(t *testing.T) {
 	}
 }
 
-// Tests that a new insertion is NOT transformed onto an older insertion if the latter occurs positionally after the former
+// Tests that a new insertion is NOT changed when transformed onto another insertion that occurs at a later position
 func TestIndependentInsertion(t *testing.T) {
 	newIns := ops.NewInsertion(0, 'a')
 	oldIns := ops.NewInsertion(5, 'b')
@@ -32,11 +32,11 @@ func TestIndependentInsertion(t *testing.T) {
 	transformedIns := TransformInsertions(newIns, oldIns)
 
 	if newIns.Equals(transformedIns) == false {
-		t.Errorf("Transformation failed to leave the operation %v unchanged.\nExpected: %v\nFound: %v", newIns, newIns, transformedIns)
+		t.Errorf("Transformation failed to leave the operation unchanged.\nExpected: %v\nFound: %v", newIns, transformedIns)
 	}
 }
 
-// Tests that a new insertion is transformed onto an older insertion if they occur at the same position
+// Tests that a new insertion is changed when transformed onto another insertion that occurs at the same position
 func TestDirectlyDependentInsertion(t *testing.T) {
 	newIns := ops.NewInsertion(0, 'b')
 	oldIns := ops.NewInsertion(0, 'a')
@@ -51,9 +51,9 @@ func TestDirectlyDependentInsertion(t *testing.T) {
 }
 
 // ------------------
-// Deletion
+// Deletion onto Deletion
 // ------------------
-// Tests that a new deletion is transformed onto an older deletion if the latter occurs positionally before the former
+// Tests that a new deletion is changed when transformed onto another deletion that occurs at an earlier position
 func TestDeletionTransformed(t *testing.T) {
 	newDel := ops.NewDeletion(5)
 	oldDel := ops.NewDeletion(0)
@@ -67,7 +67,7 @@ func TestDeletionTransformed(t *testing.T) {
 	}
 }
 
-// Tests that a new deletion is NOT transformed onto an older deletion if the latter occurs positionally after the former
+// Tests that a new deletion is NOT changed when transformed onto another deletion that occurs at a later position
 func TestDeletionNotTransformed(t *testing.T) {
 	newDel := ops.NewDeletion(0)
 	oldDel := ops.NewDeletion(5)
@@ -76,7 +76,7 @@ func TestDeletionNotTransformed(t *testing.T) {
 	transformedDel, err := TransformDeletions(newDel, oldDel)
 
 	if newDel.Equals(transformedDel) == false || err != nil {
-		t.Errorf("Transformation failed to leave the operation %v unchanged.\nExpected: %v\nFound: %v", newDel, newDel, transformedDel)
+		t.Errorf("Transformation failed to leave the operation unchanged.\nExpected: %v\nFound: %v", newDel, transformedDel)
 	}
 }
 
