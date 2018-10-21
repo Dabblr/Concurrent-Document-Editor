@@ -28,3 +28,12 @@ func TransformDeletions(newDel, prev ops.Deletion) (ops.Deletion, error) {
 	}
 	return newDel, nil
 }
+
+// TransformDelOnIns transforms the a new deletion operation on top of a previous insertion operation
+// e.g. (Del{3}, Ins{1, 'b'}) => Del{4}
+func TransformDelOnIns(newDel ops.Deletion, ins ops.Insertion) ops.Deletion {
+	if ins.Pos <= newDel.Pos {
+		return ops.NewDeletion(newDel.Pos + 1)
+	}
+	return newDel
+}

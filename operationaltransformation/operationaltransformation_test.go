@@ -91,3 +91,47 @@ func TestDuplicateDeletionCausesError(t *testing.T) {
 		t.Errorf("Expected transformation to produce error, but it was <nil>.\nTranformed Operation: %v", transformedDel)
 	}
 }
+
+// ------------------
+// Deletion onto Insertion
+// ------------------
+// Tests that a new deletion is changed when transformed onto an insertion that occurs at an earlier position
+func TestDeletionTransformedOntoInsertion(t *testing.T) {
+	del := ops.NewDeletion(5)
+	ins := ops.NewInsertion(0, ' ')
+	expectedTransformedDel := ops.NewDeletion(6)
+
+	t.Logf("Transforming %v onto %v => expecting %v", del, ins, expectedTransformedDel)
+	transformedDel := TransformDelOnIns(del, ins)
+
+	if expectedTransformedDel.Equals(transformedDel) == false {
+		t.Errorf("Transformation did not result in expected operation.\nExpected: %v\nFound: %v", expectedTransformedDel, transformedDel)
+	}
+}
+
+// Tests that a new deletion is NOT changed when transformed onto an insertion that occurs at a later position
+func TestDeletionNotTransformedOntoInsertion(t *testing.T) {
+	del := ops.NewDeletion(0)
+	ins := ops.NewInsertion(5, ' ')
+
+	t.Logf("Transforming %v onto %v => expecting %v (no change)", del, ins, del)
+	transformedDel := TransformDelOnIns(del, ins)
+
+	if del.Equals(transformedDel) == false {
+		t.Errorf("Transformation failed to leave the operation unchanged.\nExpected: %v\nFound: %v", del, transformedDel)
+	}
+}
+
+// Tests that a new deletion is changed when transformed onto an insertion that occurs at the same position
+func TestDeletionTransformedOntoInsertionAtSamePos(t *testing.T) {
+	del := ops.NewDeletion(0)
+	ins := ops.NewInsertion(0, ' ')
+	expectedTransformedDel := ops.NewDeletion(1)
+
+	t.Logf("Transforming %v onto %v => expecting %v", del, ins, expectedTransformedDel)
+	transformedDel := TransformDelOnIns(del, ins)
+
+	if expectedTransformedDel.Equals(transformedDel) == false {
+		t.Errorf("Transformation did not result in expected operation.\nExpected: %v\nFound: %v", expectedTransformedDel, transformedDel)
+	}
+}
