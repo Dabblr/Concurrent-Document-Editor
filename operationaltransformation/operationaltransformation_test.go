@@ -135,3 +135,60 @@ func TestDeletionTransformedOntoInsertionAtSamePos(t *testing.T) {
 		t.Errorf("Transformation did not result in expected operation.\nExpected: %v\nFound: %v", expectedTransformedDel, transformedDel)
 	}
 }
+
+// ------------------
+// Insertion onto Deletion
+// ------------------
+// Tests that a new insertion is decremented when transformed onto a deletion that occurs at an earlier position
+func TestInsertionTransformedOntoDeletion(t *testing.T) {
+	ins := ops.NewInsertion(5, ' ')
+	del := ops.NewDeletion(0)
+	expectedTransformedIns := ops.NewInsertion(4, ' ')
+
+	t.Logf("Transforming %v onto %v => expecting %v", ins, del, expectedTransformedIns)
+	transformedIns := TransformInsOnDel(ins, del)
+
+	if expectedTransformedIns.Equals(transformedIns) == false {
+		t.Errorf("Transformation did not result in expected operation.\nExpected: %v\nFound: %v", expectedTransformedIns, transformedIns)
+	}
+}
+
+// Tests that a new insertion is NOT changed when transformed onto a deletion that occurs at a later position
+func TestInsertionNotTransformedOntoDeletion(t *testing.T) {
+	ins := ops.NewInsertion(0, ' ')
+	del := ops.NewDeletion(5)
+
+	t.Logf("Transforming %v onto %v => expecting %v (no change)", ins, del, ins)
+	transformedIns := TransformInsOnDel(ins, del)
+
+	if ins.Equals(transformedIns) == false {
+		t.Errorf("Transformation failed to leave the operation unchanged.\nExpected: %v\nFound: %v", ins, transformedIns)
+	}
+}
+
+// Tests that a new insertion is decremented when transformed onto a deletion that occurs at the same position
+func TestInsertionTransformedOntoDeletionAtSamePos(t *testing.T) {
+	ins := ops.NewInsertion(1, ' ')
+	del := ops.NewDeletion(1)
+	expectedTransformedIns := ops.NewInsertion(0, ' ')
+
+	t.Logf("Transforming %v onto %v => expecting %v", ins, del, expectedTransformedIns)
+	transformedIns := TransformInsOnDel(ins, del)
+
+	if expectedTransformedIns.Equals(transformedIns) == false {
+		t.Errorf("Transformation did not result in expected operation.\nExpected: %v\nFound: %v", expectedTransformedIns, transformedIns)
+	}
+}
+
+// Tests that a new insertion with Pos=0 is NOT changed
+func TestInsertionAtPos0NotTransformed(t *testing.T) {
+	ins := ops.NewInsertion(0, ' ')
+	del := ops.NewDeletion(0)
+
+	t.Logf("Transforming %v onto %v => expecting %v.", ins, del, ins)
+	transformedIns := TransformInsOnDel(ins, del)
+
+	if ins.Equals(transformedIns) == false {
+		t.Errorf("Transformation failed to leave the operation unchanged.\nExpected: %v\nFound: %v", ins, transformedIns)
+	}
+}
