@@ -166,17 +166,16 @@ func TestInsertionNotTransformedOntoDeletion(t *testing.T) {
 	}
 }
 
-// Tests that a new insertion is decremented when transformed onto a deletion that occurs at the same position
+// Tests that a new insertion is NOT changed when transformed onto a deletion that occurs at the same position
 func TestInsertionTransformedOntoDeletionAtSamePos(t *testing.T) {
 	ins := ops.NewInsertion(1, ' ')
 	del := ops.NewDeletion(1)
-	expectedTransformedIns := ops.NewInsertion(0, ' ')
 
-	t.Logf("Transforming %v onto %v => expecting %v", ins, del, expectedTransformedIns)
+	t.Logf("Transforming %v onto %v => expecting %v", ins, del, ins)
 	transformedIns := TransformInsOnDel(ins, del)
 
-	if expectedTransformedIns.Equals(transformedIns) == false {
-		t.Errorf("Transformation did not result in expected operation.\nExpected: %v\nFound: %v", expectedTransformedIns, transformedIns)
+	if ins.Equals(transformedIns) == false {
+		t.Errorf("Transformation did not result in expected operation.\nExpected: %v\nFound: %v", ins, transformedIns)
 	}
 }
 

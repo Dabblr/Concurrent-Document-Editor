@@ -42,7 +42,7 @@ func TransformDelOnIns(newDel ops.Deletion, ins ops.Insertion) ops.Deletion {
 // e.g. (Ins{3, 'b'}, Del{1}) => Ins{2, 'b'}
 func TransformInsOnDel(newIns ops.Insertion, del ops.Deletion) ops.Insertion {
 	// Cannot decrement position if already at left-most position
-	if del.Pos <= newIns.Pos && newIns.Pos != 0 {
+	if del.Pos < newIns.Pos && newIns.Pos != 0 {
 		return ops.NewInsertion(newIns.Pos-1, newIns.Val)
 	}
 	return newIns
