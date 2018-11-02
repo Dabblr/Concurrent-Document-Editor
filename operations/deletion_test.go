@@ -28,15 +28,6 @@ func TestDeletionNotEquivIfDiffField(t *testing.T) {
 	}
 }
 
-func TestDeletionNotEquivIfDiffFields(t *testing.T) {
-	del1 := NewDeletion(0)
-	del2 := NewDeletion(1)
-
-	if del1.Equals(del2) == true {
-		t.Errorf("Deletions %v and %v should NOT be considered equal.", del1, del2)
-	}
-}
-
 // NOTE: this test will be worth more when we introduce more logic into the Deletion constructor
 func TestDeletionConstructor(t *testing.T) {
 	del := NewDeletion(123)
