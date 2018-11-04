@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/mxk/go-sqlite/sqlite3"
@@ -39,18 +40,26 @@ func createEmptyFile(fileName string, owner int) {
 	sqlite3.Print(q1)
 }
 
-func readFile(file int64, dest []byte) int {
-	// TODO: use row instead of fileId
-	db, _ := sqlite3.Open("updates.db")
+func readFile(file int64, dest []byte) []byte {
+	db, err := sqlite3.Open("updates.db")
 	defer db.Close()
-	data, _ := db.BlobIO("updates.db", "files", "data", file, false)
-	n, _ := data.Read(dest) // NOTE: I think this is written into dest
-	return n
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	rows, err := db.Query("SELECT data FROM files WHERE id=?", file)
+	if err != nil {
+		log.Fatal(err)
+	}
+	var data []byte
+	rows.Scan(&data)
+
+	fmt.Printf("%c\n", data)
+	return data
 }
 
 func main() {
-	// db, _ := sqlite3.Open("updates.db")
-	// q1, _ := db.Query("SELECT * FROM users")
-	// sqlite3.Print(q1)
-	createEmptyFile("testF.txt", 27)
+	var dest []byte
+	readFile(1, dest)
+	fmt.Printf("%b\n", dest)
 }
