@@ -4,27 +4,28 @@ import (
 	"errors"
 	"log"
 
+	db "github.com/jcgallegdup/Concurrent-Document-Editor/database"
 	obj "github.com/jcgallegdup/Concurrent-Document-Editor/objects"
 	opTransform "github.com/jcgallegdup/Concurrent-Document-Editor/operationaltransformation"
 )
 
 // ApplyUpdate applies all the changes contained in a revision to a file.
-// Returns an error if a change in the revision is invalid. It will apply all changes up until the invalid change.
-func ApplyUpdate(revision obj.Revision, file obj.File) error {
+// Returns an error if a change in the revision is invalid.
+func ApplyUpdate(revision obj.Revision, file obj.File, database db.Database) error {
 	var err error
-	prevChanges := mockGetChangesSinceRevision(revision.ID, revision.RevisionNumber)
+	var changesToApply []obj.Change
+	prevChanges := database.GetChangesSinceRevision(revision.ID, revision.RevisionNumber)
 	fileContent := file.Content
 	for _, change := range revision.Changes {
 		if !change.IsValid() {
-			err = errors.New("invalid change:" + change.String())
-			break
+			return errors.New("invalid change:" + change.String())
 		}
 
 		log.Println("Original change:", change)
 		transformedChange, transformErr := TransformChange(change, prevChanges)
 		if transformErr != nil {
 			// Change was not applied (duplicate), move on to the next one.
-			log.Println("Change was not applied.")
+			log.Println("Change was not applied (duplicate).")
 			continue
 		}
 
@@ -32,12 +33,13 @@ func ApplyUpdate(revision obj.Revision, file obj.File) error {
 		fileContent, err = ApplyChange(transformedChange, fileContent)
 		if err != nil {
 			// Index was out of range.
-			break
+			return err
 		}
-		mockInsertChange(revision.ID, transformedChange)
+		changesToApply = append(changesToApply, transformedChange)
 	}
-	mockUpdateFileContent(revision.ID, fileContent)
-	return err
+	database.InsertChanges(revision.ID, changesToApply)
+	database.UpdateFileContent(revision.ID, fileContent)
+	return nil
 }
 
 // TransformChange transforms a new change so it can be applied on top of the changes that have already occurred.

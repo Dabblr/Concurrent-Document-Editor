@@ -7,8 +7,12 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
+	db "github.com/jcgallegdup/Concurrent-Document-Editor/database"
 	obj "github.com/jcgallegdup/Concurrent-Document-Editor/objects"
 )
+
+// Change the type of this based on environment.
+var database db.MockDB
 
 // CreateFile creates a new empty file and returns the associated file object.
 func CreateFile(w http.ResponseWriter, r *http.Request) {
@@ -24,7 +28,7 @@ func CreateFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	file.ID = mockCreateEmptyFile(file.Name, file.User)
+	file.ID = database.CreateEmptyFile(file.Name, file.User)
 	file.RevisionNumber = 1
 	log.Println("File created.", file)
 	w.Header().Add("Content-Type", "application/json")
@@ -43,7 +47,7 @@ func GetFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	file, err := mockGetFileContent(id)
+	file, err := database.GetFileContent(id)
 	if err != nil {
 		// Invalid ID.
 		log.Printf("GET request to /file/%s contained an invalid file ID.\n", params["id"])
@@ -71,7 +75,7 @@ func PostUpdates(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	file, err := mockGetFileContent(revision.ID)
+	file, err := database.GetFileContent(revision.ID)
 	if err != nil {
 		// Invalid ID.
 		log.Printf("POST request to /file/%s contained an invalid file ID.\n", params["id"])
@@ -80,11 +84,14 @@ func PostUpdates(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Printf("\"%s\" made updates to File ID %d\n", revision.User, revision.ID)
-	err = ApplyUpdate(revision, file)
+	err = ApplyUpdate(revision, file, &database)
 	if err != nil {
-		// Not all updates were applied.
-		log.Println("Not all updates applied:", err)
+		// Updates were not applied.
+		log.Println("Updates were not applied:", err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
+
 	w.WriteHeader(http.StatusOK)
 }
 
