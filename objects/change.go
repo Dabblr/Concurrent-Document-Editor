@@ -21,6 +21,14 @@ func NewChange(changeType string, position int, value string) Change {
 	return Change{changeType, position, value}
 }
 
+// Equals defines what makes two Change objects equal.
+func (change *Change) Equals(change2 Change) bool {
+	if change.Type == change2.Type && change.Position == change2.Position && change.Value == change2.Value {
+		return true
+	}
+	return false
+}
+
 // IsValid checks that only a single character is being inserted/deleted and the type is insert or delete.
 func (change *Change) IsValid() bool {
 	if len(change.Value) > 1 {

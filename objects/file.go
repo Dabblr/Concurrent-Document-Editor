@@ -21,6 +21,14 @@ func NewFile(user string, id int, name string, revision int, content string) Fil
 	return File{user, id, name, revision, content}
 }
 
+// Equals defines what makes two File objects equal.
+func (file *File) Equals(file2 File) bool {
+	if file.Content == file2.Content && file.ID == file2.ID && file.Name == file2.Name && file.RevisionNumber == file2.RevisionNumber && file.User == file2.User {
+		return true
+	}
+	return false
+}
+
 // String determines the default string format for the File type.
 func (file File) String() string {
 	return fmt.Sprintf("File: user=%s id=%d name=%s revisionNumber=%d content=%s", file.User, file.ID, file.Name, file.RevisionNumber, file.Content)

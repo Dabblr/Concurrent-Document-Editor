@@ -42,9 +42,7 @@ func (m *MockDB) GetChangesSinceRevision(id int, revisionNumber int) []obj.Chang
 
 // InsertChanges mocks inserting an array of changes to a file in the database.
 func (m *MockDB) InsertChanges(id int, changes []obj.Change) {
-	for _, change := range changes {
-		m.Changes = append(m.Changes, change)
-	}
+	m.Changes = append(m.Changes, changes...)
 }
 
 // UpdateFileContent mocks updating the file content for the given file in the database.
