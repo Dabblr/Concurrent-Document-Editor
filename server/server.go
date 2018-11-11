@@ -63,9 +63,17 @@ func GetFile(w http.ResponseWriter, r *http.Request) {
 // PostUpdates adds the updates to the file.
 func PostUpdates(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
+	id, conversionErr := strconv.Atoi(params["id"])
+	if conversionErr != nil {
+		// Post request contained an invalid id.
+		log.Printf("POST request to /file/%s contained an invalid file ID.\n", params["id"])
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
 	var revision obj.Revision
 	err := json.NewDecoder(r.Body).Decode(&revision)
-	if err != nil || revision.User == "" || revision.ID == 0 || revision.RevisionNumber == 0 {
+	if err != nil || revision.User == "" || revision.ID == 0 || revision.RevisionNumber == 0 || revision.ID != id {
 		// Missing required fields or poorly formed request.
 		log.Printf("POST request to /file/%s was missing required field(s) or poorly formed.\n", params["id"])
 		if err != nil {

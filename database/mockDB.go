@@ -30,6 +30,8 @@ func (m *MockDB) GetFileContent(id int) (obj.File, error) {
 		// Invalid id.
 		return obj.NewFile("", 0, "", 0, ""), errors.New("invalid file id")
 	}
+	// Since the client is fetching the most recent revision we can clear the Changes array.
+	m.Changes = []obj.Change{}
 	return obj.NewFile("", id, "fileName", 1, m.FileContent), nil
 }
 

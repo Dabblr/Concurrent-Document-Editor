@@ -13,7 +13,7 @@ type File struct {
 	// The revision number of the file.
 	RevisionNumber int `json:"revision_number"`
 	// The file content.
-	Content string `json:"content,omitempty"`
+	Content string `json:"content"`
 }
 
 // NewFile is a constructor for the File type.
