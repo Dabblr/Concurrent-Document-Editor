@@ -1,13 +1,14 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/mxk/go-sqlite/sqlite3"
 )
 
 // TODO: list of changes in a revision
-// TODO: store the latest revision, latest changes, and new file data
+// TODO: store the latest revision, latest changes
 // TODO: tests lol
 
 // Creates a user with the given username
@@ -42,12 +43,25 @@ func createEmptyFile(fileName string, owner int) {
 		log.Fatal(err)
 	}
 	statement.Exec(fileName, owner)
-	q1, _ := db.Query("SELECT * FROM files")
-	sqlite3.Print(q1)
+}
+
+func updateFileContent(id int, fileContent string) {
+	db, err := sqlite3.Open("updates.db")
+	defer db.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	statement, err := db.Prepare("UPDATE files SET data = ? WHERE id = ?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	statement.Exec(fileContent, id)
+
 }
 
 // Returns the most up-to-date contents of the given file
-func getFileContent(file int, dest []byte) []byte {
+func getFileContent(file int, dest string) string {
 	db, err := sqlite3.Open("updates.db")
 	defer db.Close()
 	if err != nil {
@@ -58,15 +72,10 @@ func getFileContent(file int, dest []byte) []byte {
 	if err != nil {
 		log.Fatal(err)
 	}
-	var data []byte
+	var data string
 	rows.Scan(&data)
 
 	return data
-}
-
-type revision struct {
-	revisionNumber int
-	changes        []change
 }
 
 type change struct {
@@ -106,10 +115,11 @@ func getChangesSinceRevision(rev int, file int) []change {
 }
 
 func main() {
-	var dest []byte
-	getFileContent(1, dest)
-	// fmt.Printf("%b\n", dest)
+	var dest string
+	getChangesSinceRevision(1, 1)
 
-	var c = getChangesSinceRevision(1, 1)
-	print(c)
+	updateFileContent(1, "dest")
+
+	dest = getFileContent(1, dest)
+	fmt.Printf("%s\n", dest)
 }
