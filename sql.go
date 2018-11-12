@@ -1,14 +1,19 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/mxk/go-sqlite/sqlite3"
 )
 
-// TODO: list of changes in a revision
-// TODO: store the latest revision, latest changes
-// TODO: tests lol
+// TODO: tests
+// TODO: foreign key constraints seem to be ignored?
+
+type change struct {
+	character string
+	position  int
+}
 
 // Creates a user with the given username
 func createUser(username string) {
@@ -29,7 +34,6 @@ func createUser(username string) {
 
 // Creates an empty file by the given owner with the given file name
 func createEmptyFile(fileName string, owner int) {
-	// TODO: foreign key constraints seem to be ignored?
 	// TODO: return file id http://www.sqlite.org/c3ref/last_insert_rowid.html ?
 	db, err := sqlite3.Open("updates.db")
 	defer db.Close()
@@ -44,7 +48,8 @@ func createEmptyFile(fileName string, owner int) {
 	statement.Exec(fileName, owner)
 }
 
-func updateFileContent(id int, fileContent string) {
+// Sets the current file content
+func updateFileContents(id int, fileContent string) {
 	db, err := sqlite3.Open("updates.db")
 	defer db.Close()
 	if err != nil {
@@ -60,7 +65,7 @@ func updateFileContent(id int, fileContent string) {
 }
 
 // Returns the most up-to-date contents of the given file
-func getFileContent(file int, dest string) string {
+func getFileContent(file int) string {
 	db, err := sqlite3.Open("updates.db")
 	defer db.Close()
 	if err != nil {
@@ -68,6 +73,7 @@ func getFileContent(file int, dest string) string {
 	}
 
 	rows, err := db.Query("SELECT data FROM files WHERE id=?", file)
+	defer rows.Close()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -77,12 +83,7 @@ func getFileContent(file int, dest string) string {
 	return data
 }
 
-type change struct {
-	character string
-	position  int
-}
-
-// Returns a list of chagnes
+// Returns a list of chagnes since the given revision
 func getChangesSinceRevision(rev int, file int) []change {
 	db, err := sqlite3.Open("updates.db")
 	defer db.Close()
@@ -91,6 +92,7 @@ func getChangesSinceRevision(rev int, file int) []change {
 	}
 
 	revs, err := db.Query("SELECT DISTINCT changes.file, rev_number, position, character FROM revisions JOIN changes WHERE changes.file = ? AND number > ?", file, rev)
+	defer revs.Close()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -114,6 +116,8 @@ func getChangesSinceRevision(rev int, file int) []change {
 	return changes
 }
 
+// Insert a list of changes into db
+// Creates an appropriate revision for the chagnes
 func insertChanges(id int, changes []change) {
 	db, err := sqlite3.Open("updates.db")
 	defer db.Close()
@@ -121,30 +125,44 @@ func insertChanges(id int, changes []change) {
 		log.Fatal(err)
 	}
 
-	statement, err := db.Prepare("INSERT INTO changes (file, position, character) VALUES (?, ?, ?)")
+	row, err := db.Query("SELECT MAX(rev_number) FROM changes WHERE file = ?", id)
+	defer row.Close()
+	if err != nil {
+		log.Panic(err)
+	}
+
+	firstChange := false
+	var revNum int
+	if !firstChange {
+		row.Scan(&revNum)
+	}
+	revNum++
+
+	statement, err := db.Prepare("INSERT INTO changes (file, rev_number, position, character) VALUES (?, ?, ?, ?)")
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	for _, c := range changes {
-		statement.Exec(id, c.position, c.character) // TODO: change#
+		statement.Exec(id, revNum, c.position, c.character)
 	}
+
+	db.Exec("INSERT INTO revisions (file, number) VALUES (?, ?)", id, revNum)
 }
 
 func main() {
-	// var dest string
-	// getChangesSinceRevision(1, 1)
+	createUser("NikitaIsAwesome")
+	createEmptyFile("Test347.txt", 1)
+	updateFileContents(1, "q8^)")
+	data := getFileContent(1)
+	fmt.Println(data)
 
-	// updateFileContent(1, "dest")
+	var changes []change
+	changes = append(changes, change{position: 0, character: "a"})
+	changes = append(changes, change{position: 1, character: "b"})
+	changes = append(changes, change{position: 2, character: "c"})
 
-	// createEmptyFile("PLEEASE", 2)
-
-	// dest = getFileContent(1, dest)
-	// fmt.Printf("%s\n", dest)
-
-	var cs []change
-	cs = append(cs, change{character: "q", position: 1})
-	cs = append(cs, change{character: "w", position: 2})
-	// cs[1] = change{character: "w", position: 2}
-	insertChanges(1, cs)
+	insertChanges(1, changes)
+	receivedChanges := getChangesSinceRevision(0, 1)
+	fmt.Println(receivedChanges)
 }
