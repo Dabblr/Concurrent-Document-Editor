@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/mxk/go-sqlite/sqlite3"
@@ -86,6 +85,7 @@ type change struct {
 // Returns a list of chagnes
 func getChangesSinceRevision(rev int, file int) []change {
 	db, err := sqlite3.Open("updates.db")
+	defer db.Close()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -114,12 +114,37 @@ func getChangesSinceRevision(rev int, file int) []change {
 	return changes
 }
 
+func insertChanges(id int, changes []change) {
+	db, err := sqlite3.Open("updates.db")
+	defer db.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	statement, err := db.Prepare("INSERT INTO changes (file, position, character) VALUES (?, ?, ?)")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, c := range changes {
+		statement.Exec(id, c.position, c.character) // TODO: change#
+	}
+}
+
 func main() {
-	var dest string
-	getChangesSinceRevision(1, 1)
+	// var dest string
+	// getChangesSinceRevision(1, 1)
 
-	updateFileContent(1, "dest")
+	// updateFileContent(1, "dest")
 
-	dest = getFileContent(1, dest)
-	fmt.Printf("%s\n", dest)
+	// createEmptyFile("PLEEASE", 2)
+
+	// dest = getFileContent(1, dest)
+	// fmt.Printf("%s\n", dest)
+
+	var cs []change
+	cs = append(cs, change{character: "q", position: 1})
+	cs = append(cs, change{character: "w", position: 2})
+	// cs[1] = change{character: "w", position: 2}
+	insertChanges(1, cs)
 }
