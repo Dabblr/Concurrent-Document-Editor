@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"strconv"
 
+	db "github.com/Dabblr/Concurrent-Document-Editor/database"
+	obj "github.com/Dabblr/Concurrent-Document-Editor/objects"
 	"github.com/gorilla/mux"
-	db "github.com/jcgallegdup/Concurrent-Document-Editor/database"
-	obj "github.com/jcgallegdup/Concurrent-Document-Editor/objects"
 )
 
 // Change the type of this based on environment.
@@ -20,7 +20,7 @@ func CreateFile(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&file)
 	if err != nil || file.Name == "" || file.User == "" {
 		// Request was missing required fields or poorly formed.
-		log.Println("POST request to /file was missing required field(s) or poorly formed.")
+		log.Println("POST request to /files was missing required field(s) or poorly formed.")
 		if err != nil {
 			log.Println(err)
 		}
@@ -28,8 +28,7 @@ func CreateFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	file.ID = database.CreateEmptyFile(file.Name, file.User)
-	file.RevisionNumber = 1
+	file.ID, file.RevisionNumber = database.CreateEmptyFile(file.Name, file.User)
 	log.Println("File created.", file)
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
@@ -42,7 +41,7 @@ func GetFile(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(params["id"])
 	if err != nil {
 		// Invalid ID.
-		log.Printf("GET request to /file/%s contained an invalid file ID.\n", params["id"])
+		log.Printf("GET request to /files/%s did not contain an integer file ID.\n", params["id"])
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -50,7 +49,7 @@ func GetFile(w http.ResponseWriter, r *http.Request) {
 	file, err := database.GetFileContent(id)
 	if err != nil {
 		// Invalid ID.
-		log.Printf("GET request to /file/%s contained an invalid file ID.\n", params["id"])
+		log.Printf("Could not retrieve file for given ID: %s.\n", params["id"])
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -66,7 +65,7 @@ func PostUpdates(w http.ResponseWriter, r *http.Request) {
 	id, conversionErr := strconv.Atoi(params["id"])
 	if conversionErr != nil {
 		// Post request contained an invalid id.
-		log.Printf("POST request to /file/%s contained an invalid file ID.\n", params["id"])
+		log.Printf("POST request to /files/%s did not contain an integer file ID.\n", params["id"])
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -75,7 +74,7 @@ func PostUpdates(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&revision)
 	if err != nil || revision.User == "" || revision.ID == 0 || revision.RevisionNumber == 0 || revision.ID != id {
 		// Missing required fields or poorly formed request.
-		log.Printf("POST request to /file/%s was missing required field(s) or poorly formed.\n", params["id"])
+		log.Printf("POST request to /files/%s was missing required field(s) or poorly formed.\n", params["id"])
 		if err != nil {
 			log.Println(err)
 		}
@@ -86,7 +85,7 @@ func PostUpdates(w http.ResponseWriter, r *http.Request) {
 	file, err := database.GetFileContent(revision.ID)
 	if err != nil {
 		// Invalid ID.
-		log.Printf("POST request to /file/%s contained an invalid file ID.\n", params["id"])
+		log.Printf("Could not retrieve file for given ID: %s.\n", params["id"])
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -105,8 +104,8 @@ func PostUpdates(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	router := mux.NewRouter()
-	router.HandleFunc("/file", CreateFile).Methods("POST")
-	router.HandleFunc("/file/{id}", GetFile).Methods("GET")
-	router.HandleFunc("/file/{id}", PostUpdates).Methods("POST")
+	router.HandleFunc("/files", CreateFile).Methods("POST")
+	router.HandleFunc("/files/{id}", GetFile).Methods("GET")
+	router.HandleFunc("/files/{id}", PostUpdates).Methods("POST")
 	log.Fatal(http.ListenAndServe(":8080", router))
 }

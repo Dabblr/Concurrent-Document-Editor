@@ -3,7 +3,7 @@ package objects
 import (
 	"testing"
 
-	ops "github.com/jcgallegdup/Concurrent-Document-Editor/operations"
+	ops "github.com/Dabblr/Concurrent-Document-Editor/operations"
 )
 
 // Tests that two Change objects are equal if they have the same fields.

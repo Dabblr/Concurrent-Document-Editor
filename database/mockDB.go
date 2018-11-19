@@ -4,7 +4,7 @@ import (
 	"errors"
 	"log"
 
-	obj "github.com/jcgallegdup/Concurrent-Document-Editor/objects"
+	obj "github.com/Dabblr/Concurrent-Document-Editor/objects"
 )
 
 // MockDB mocks the database functions for unit testing.
@@ -18,9 +18,9 @@ type MockDB struct {
 }
 
 // CreateEmptyFile increments the FileCounter and returns it to mock creating a file.
-func (m *MockDB) CreateEmptyFile(fileName string, userName string) int {
+func (m *MockDB) CreateEmptyFile(fileName string, userName string) (int, int) {
 	m.FileCounter++
-	return m.FileCounter
+	return m.FileCounter, 1
 }
 
 // GetFileContent returns a File object containing FileContent.
@@ -30,8 +30,6 @@ func (m *MockDB) GetFileContent(id int) (obj.File, error) {
 		// Invalid id.
 		return obj.NewFile("", 0, "", 0, ""), errors.New("invalid file id")
 	}
-	// Since the client is fetching the most recent revision we can clear the Changes array.
-	m.Changes = []obj.Change{}
 	return obj.NewFile("", id, "fileName", 1, m.FileContent), nil
 }
 

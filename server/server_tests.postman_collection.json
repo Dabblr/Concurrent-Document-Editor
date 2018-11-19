@@ -15,7 +15,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "99a94627-b601-4d64-a8bc-04b93ccd865b",
+								"id": "3653a8d2-02a4-4109-8bbd-e5735cc3a029",
 								"exec": [
 									"pm.test(\"Response status is 400 Bad Request\", function() {",
 									"    pm.response.to.have.status(400);",
@@ -37,17 +37,17 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://localhost:8080/file",
+							"raw": "http://localhost:8080/files",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"file"
+								"files"
 							]
 						},
-						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `\\file` endpoint has no body."
+						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `/files` endpoint has no body."
 					},
 					"response": []
 				},
@@ -86,17 +86,17 @@
 							"raw": "{\t\n\t\"user\":\"user1\",\n\tname: \"file1.txt\"\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8080/file",
+							"raw": "http://localhost:8080/files",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"file"
+								"files"
 							]
 						},
-						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `\\file` endpoint contains invalid/poorly formed JSON."
+						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `/files` endpoint contains invalid/poorly formed JSON."
 					},
 					"response": []
 				},
@@ -126,8 +126,8 @@
 							{
 								"key": "Content-Type",
 								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
+								"type": "text",
+								"value": "application/json"
 							}
 						],
 						"body": {
@@ -135,17 +135,17 @@
 							"raw": "{\t\n\t\"name\": \"file1.txt\"\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8080/file",
+							"raw": "http://localhost:8080/files",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"file"
+								"files"
 							]
 						},
-						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `/file` endpoint is missing a `user` field in the JSON body."
+						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `/files` endpoint is missing a `user` field in the JSON body."
 					},
 					"response": []
 				},
@@ -184,17 +184,17 @@
 							"raw": "{\t\n\t\"user\":\"user1\"\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8080/file",
+							"raw": "http://localhost:8080/files",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"file"
+								"files"
 							]
 						},
-						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `\\file` endpoint is missing a `name` field in the JSON body."
+						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `/files` endpoint is missing a `name` field in the JSON body."
 					},
 					"response": []
 				},
@@ -267,22 +267,22 @@
 							"raw": "{\t\n\t\"user\":\"user1\",\n\t\"name\": \"file1.txt\"\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8080/file",
+							"raw": "http://localhost:8080/files",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"file"
+								"files"
 							]
 						},
-						"description": "Verifies that the response has a 201 status code and contains the appropriate JSON after a successful POST request to the `/file` endpoint."
+						"description": "Verifies that the response has a 201 status code and contains the appropriate JSON after a successful POST request to the `/files` endpoint."
 					},
 					"response": []
 				}
 			],
-			"description": "Contains tests for the file creation endpoint (POST request to `/file`).",
+			"description": "Contains tests for the file creation endpoint (POST request to `/files`).",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -344,18 +344,18 @@
 							"raw": "{\n\t\"user\":\"user1\",\n\t\"id\": \"nonIntegerId\",\n\t\"revision_number\":1,\n\t\"name\": \"file1.txt\",\n\t\"changes\":[\n\t\t{\n\t\t\t\"type\":\"insert\",\n\t\t\t\"position\":0,\n\t\t\t\"value\":\"x\"\n\t\t},\n\t\t{\n\t\t\t\"type\":\"insert\",\n\t\t\t\"position\":1,\n\t\t\t\"value\":\"y\"\n\t\t}\n\t]\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8080/file/nonIntegerId",
+							"raw": "http://localhost:8080/files/nonIntegerId",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"file",
+								"files",
 								"nonIntegerId"
 							]
 						},
-						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `/file/{id}` endpoint contains an id that is not an integer."
+						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `/files/{id}` endpoint contains an id that is not an integer."
 					},
 					"response": []
 				},
@@ -394,41 +394,23 @@
 							"raw": "{\n\t\"user\":\"user1\",\n\t\"id\":{{invalid_id}},\n\t\"revision_number\":1,\n\t\"name\": \"file1.txt\",\n\t\"changes\":[\n\t\t{\n\t\t\t\"type\":\"insert\",\n\t\t\t\"position\":0,\n\t\t\t\"value\":\"x\"\n\t\t},\n\t\t{\n\t\t\t\"type\":\"insert\",\n\t\t\t\"position\":1,\n\t\t\t\"value\":\"y\"\n\t\t}\n\t]\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8080/file/{{invalid_id}}",
+							"raw": "http://localhost:8080/files/{{invalid_id}}",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"file",
+								"files",
 								"{{invalid_id}}"
 							]
 						},
-						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `/file/{id}` endpoint contains an invalid id for which no file exists on the server."
+						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `/files/{id}` endpoint contains an invalid id for which no file exists on the server."
 					},
 					"response": []
 				},
 				{
 					"name": "TestPostUpdatesNoBody",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "a09ef850-183a-4f37-8611-5cf3e9ba0b3b",
-								"exec": [
-									"pm.test(\"Response status is 400 Bad Request\", function() {",
-									"    pm.response.to.have.status(400);",
-									"});",
-									"",
-									"pm.test(\"Response has no body\", function() {",
-									"   pm.response.to.not.be.withBody; ",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -437,18 +419,18 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://localhost:8080/file/{{id}}",
+							"raw": "http://localhost:8080/files/{{id}}",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"file",
+								"files",
 								"{{id}}"
 							]
 						},
-						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `/file/{id}` endpoint has no body."
+						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `/files/{id}` endpoint has no body."
 					},
 					"response": []
 				},
@@ -487,18 +469,18 @@
 							"raw": "{\n\t\"user\":\"user1\",\n\t\"id\":{{invalid_id}},\n\t\"revision_number\":1,\n\t\"name\": \"file1.txt\",\n\t\"changes\":[\n\t\t{\n\t\t\t\"type\":\"insert\",\n\t\t\t\"position\":0,\n\t\t\t\"value\":\"x\"\n\t\t}\n\t\t{\n\t\t\t\"type\":\"insert\",\n\t\t\t\"position\":1,\n\t\t\t\"value\":\"y\"\n\t\t}\n\t]\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8080/file/{{id}}",
+							"raw": "http://localhost:8080/files/{{id}}",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"file",
+								"files",
 								"{{id}}"
 							]
 						},
-						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `/file/{id}` endpoint contains invalid/poorly formed JSON."
+						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `/files/{id}` endpoint contains invalid/poorly formed JSON."
 					},
 					"response": []
 				},
@@ -528,8 +510,8 @@
 							{
 								"key": "Content-Type",
 								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
+								"type": "text",
+								"value": "application/json"
 							}
 						],
 						"body": {
@@ -537,18 +519,18 @@
 							"raw": "{\n\t\"user\":\"user1\",\n\t\"id\":{{invalid_id}},\n\t\"revision_number\":1,\n\t\"name\": \"file1.txt\",\n\t\"changes\":[\n\t\t{\n\t\t\t\"type\":\"insert\",\n\t\t\t\"position\":0,\n\t\t\t\"value\":\"x\"\n\t\t},\n\t\t{\n\t\t\t\"type\":\"insert\",\n\t\t\t\"position\":1,\n\t\t\t\"value\":\"y\"\n\t\t}\n\t]\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8080/file/{{id}}",
+							"raw": "http://localhost:8080/files/{{id}}",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"file",
+								"files",
 								"{{id}}"
 							]
 						},
-						"description": "Verifies that the response status code is 400 Bad Request when the id in the POST request to the `/file/{id}` endpoint does not match the id in the request body."
+						"description": "Verifies that the response status code is 400 Bad Request when the id in the POST request to the `/files/{id}` endpoint does not match the id in the request body."
 					},
 					"response": []
 				},
@@ -587,18 +569,18 @@
 							"raw": "{\n\t\"id\":{{id}},\n\t\"revision_number\":1,\n\t\"name\": \"file1.txt\",\n\t\"changes\":[\n\t\t{\n\t\t\t\"type\":\"insert\",\n\t\t\t\"position\":0,\n\t\t\t\"value\":\"x\"\n\t\t},\n\t\t{\n\t\t\t\"type\":\"insert\",\n\t\t\t\"position\":1,\n\t\t\t\"value\":\"y\"\n\t\t}\n\t]\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8080/file/{{id}}",
+							"raw": "http://localhost:8080/files/{{id}}",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"file",
+								"files",
 								"{{id}}"
 							]
 						},
-						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `/file` endpoint is missing a `user` field in the JSON body."
+						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `/files` endpoint is missing a `user` field in the JSON body."
 					},
 					"response": []
 				},
@@ -637,18 +619,18 @@
 							"raw": "{\n\t\"user\":\"user1\",\n\t\"revision_number\":1,\n\t\"name\": \"file1.txt\",\n\t\"changes\":[\n\t\t{\n\t\t\t\"type\":\"insert\",\n\t\t\t\"position\":0,\n\t\t\t\"value\":\"x\"\n\t\t},\n\t\t{\n\t\t\t\"type\":\"insert\",\n\t\t\t\"position\":1,\n\t\t\t\"value\":\"y\"\n\t\t}\n\t]\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8080/file/{{id}}",
+							"raw": "http://localhost:8080/files/{{id}}",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"file",
+								"files",
 								"{{id}}"
 							]
 						},
-						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `/file/{id}` endpoint is missing an `id` field in the JSON body."
+						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `/files/{id}` endpoint is missing an `id` field in the JSON body."
 					},
 					"response": []
 				},
@@ -687,18 +669,18 @@
 							"raw": "{\n\t\"user\":\"user1\",\n\t\"id\":{{id}},\n\t\"name\": \"file1.txt\",\n\t\"changes\":[\n\t\t{\n\t\t\t\"type\":\"insert\",\n\t\t\t\"position\":0,\n\t\t\t\"value\":\"x\"\n\t\t},\n\t\t{\n\t\t\t\"type\":\"insert\",\n\t\t\t\"position\":1,\n\t\t\t\"value\":\"y\"\n\t\t}\n\t]\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8080/file/{{id}}",
+							"raw": "http://localhost:8080/files/{{id}}",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"file",
+								"files",
 								"{{id}}"
 							]
 						},
-						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `/file/{id}` endpoint is missing a `revision_number` field in the JSON body."
+						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `/files/{id}` endpoint is missing a `revision_number` field in the JSON body."
 					},
 					"response": []
 				},
@@ -737,18 +719,18 @@
 							"raw": "{\n\t\"user\":\"user1\",\n\t\"id\":{{id}},\n\t\"revision_number\":1,\n\t\"name\": \"file1.txt\",\n\t\"changes\":[\n\t\t{\n\t\t\t\"type\":\"insert\",\n\t\t\t\"position\":0,\n\t\t\t\"value\":\"x\"\n\t\t},\n\t\t{\n\t\t\t\"type\":\"insert\",\n\t\t\t\"position\":-1,\n\t\t\t\"value\":\"y\"\n\t\t}\n\t]\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8080/file/{{id}}",
+							"raw": "http://localhost:8080/files/{{id}}",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"file",
+								"files",
 								"{{id}}"
 							]
 						},
-						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `/file/{id}` endpoint contains an invalid change."
+						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `/files/{id}` endpoint contains an invalid change."
 					},
 					"response": []
 				},
@@ -787,18 +769,68 @@
 							"raw": "{\n\t\"user\":\"user1\",\n\t\"id\":{{id}},\n\t\"revision_number\":1,\n\t\"name\": \"file1.txt\",\n\t\"changes\":[\n\t\t{\n\t\t\t\"type\":\"insert\",\n\t\t\t\"position\":0,\n\t\t\t\"value\":\"x\"\n\t\t},\n\t\t{\n\t\t\t\"type\":\"insert\",\n\t\t\t\"position\":1,\n\t\t\t\"value\":\"y\"\n\t\t}\n\t]\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8080/file/{{id}}",
+							"raw": "http://localhost:8080/files/{{id}}",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"file",
+								"files",
 								"{{id}}"
 							]
 						},
-						"description": "Verifies that the response status code is 200 OK when a POST request to the `/file/{id}` endpoint is successful."
+						"description": "Verifies that the response status code is 200 OK when a POST request to the `/files/{id}` endpoint is successful."
+					},
+					"response": []
+				},
+				{
+					"name": "TestPostUpdateSuccessDelete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0f815329-aeeb-4067-bfa0-c84f50eb20f5",
+								"exec": [
+									"pm.test(\"Response status is 200 OK\", function() {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has no body\", function() {",
+									"   pm.response.to.not.be.withBody; ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"user\":\"user1\",\n\t\"id\":{{id}},\n\t\"revision_number\":1,\n\t\"name\": \"file1.txt\",\n\t\"changes\":[\n\t\t{\n\t\t\t\"type\":\"insert\",\n\t\t\t\"position\":0,\n\t\t\t\"value\":\"x\"\n\t\t},\n\t\t{\n\t\t\t\"type\":\"delete\",\n\t\t\t\"position\":0,\n\t\t\t\"value\":\"x\"\n\t\t}\n\t]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/files/{{id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"files",
+								"{{id}}"
+							]
+						},
+						"description": "Verifies that the response status code is 200 OK when a POST request to the `/files/{id}` endpoint containing a delete operation is successful."
 					},
 					"response": []
 				}
@@ -858,18 +890,18 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://localhost:8080/file/nonIntegerId",
+							"raw": "http://localhost:8080/files/nonIntegerId",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"file",
+								"files",
 								"nonIntegerId"
 							]
 						},
-						"description": "Verifies that the response status code is 400 Bad Request when a GET request to the `/file/{id}` endpoint contains an id that is not an integer."
+						"description": "Verifies that the response status code is 400 Bad Request when a GET request to the `/files/{id}` endpoint contains an id that is not an integer."
 					},
 					"response": []
 				},
@@ -901,18 +933,18 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://localhost:8080/file/{{invalid_id}}",
+							"raw": "http://localhost:8080/files/{{invalid_id}}",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"file",
+								"files",
 								"{{invalid_id}}"
 							]
 						},
-						"description": "Verifies that the response status code is 400 Bad Request when a GET request to the `/file/{id}` endpoint contains an invalid id."
+						"description": "Verifies that the response status code is 400 Bad Request when a GET request to the `/files/{id}` endpoint contains an invalid id."
 					},
 					"response": []
 				},
@@ -972,18 +1004,18 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://localhost:8080/file/{{id}}",
+							"raw": "http://localhost:8080/files/{{id}}",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"file",
+								"files",
 								"{{id}}"
 							]
 						},
-						"description": "Verifies that the response has a 200 status code and contains the appropriate JSON after a successful GET request to the `/file/{id}` endpoint."
+						"description": "Verifies that the response has a 200 status code and contains the appropriate JSON after a successful GET request to the `/files/{id}` endpoint."
 					},
 					"response": []
 				}
@@ -1037,19 +1069,19 @@
 	],
 	"variable": [
 		{
-			"id": "853f7b99-202d-46a7-81f6-9455b90a947a",
+			"id": "7a626478-f1cb-46f7-9d0b-af6bbe7d3d08",
 			"value": "",
 			"type": "string",
 			"disabled": true
 		},
 		{
-			"id": "1fcafe25-53e6-4942-b3d7-f333fe5426e8",
+			"id": "62f2e5b1-755e-4bd2-8b73-1f401be35fc1",
 			"value": "",
 			"type": "string",
 			"disabled": true
 		},
 		{
-			"id": "498e8f67-5a53-45c0-949e-8a02a6af1485",
+			"id": "08d82fa7-072f-46ca-8afd-bd5ae57ad17b",
 			"value": "",
 			"type": "string",
 			"disabled": true

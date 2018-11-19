@@ -3,8 +3,8 @@ package main
 import (
 	"testing"
 
-	db "github.com/jcgallegdup/Concurrent-Document-Editor/database"
-	obj "github.com/jcgallegdup/Concurrent-Document-Editor/objects"
+	db "github.com/Dabblr/Concurrent-Document-Editor/database"
+	obj "github.com/Dabblr/Concurrent-Document-Editor/objects"
 )
 
 // Tests that the file content is correctly updated when a change inserts at the start.
@@ -276,17 +276,6 @@ func TestTransformChangeIndependentDelOnInsAndDel(t *testing.T) {
 
 	if transformedChange.Equals(expChange) == false || err != nil {
 		t.Errorf("Expected %v from TransformChange but got %v.", expChange, transformedChange)
-	}
-}
-
-// Tests that TransformChange returns an error when a duplicate deletion occurs.
-func TestTransformChangeDuplicateDelReturnErr(t *testing.T) {
-	prevChanges := []obj.Change{obj.NewChange("delete", 0, "a"), obj.NewChange("delete", 1, "b")}
-	newChange := obj.NewChange("delete", 2, "b")
-	transformedChange, err := TransformChange(newChange, prevChanges)
-
-	if err == nil {
-		t.Errorf("Expected TransformChange to return an error but it was nil. Transformed change was %v.", transformedChange)
 	}
 }
 

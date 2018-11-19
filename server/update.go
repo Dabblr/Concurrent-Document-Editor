@@ -2,11 +2,12 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"log"
 
-	db "github.com/jcgallegdup/Concurrent-Document-Editor/database"
-	obj "github.com/jcgallegdup/Concurrent-Document-Editor/objects"
-	opTransform "github.com/jcgallegdup/Concurrent-Document-Editor/operationaltransformation"
+	db "github.com/Dabblr/Concurrent-Document-Editor/database"
+	obj "github.com/Dabblr/Concurrent-Document-Editor/objects"
+	opTransform "github.com/Dabblr/Concurrent-Document-Editor/operationaltransformation"
 )
 
 // ApplyUpdate applies all the changes contained in a revision to a file.
@@ -24,9 +25,8 @@ func ApplyUpdate(revision obj.Revision, file obj.File, database db.Database) err
 		log.Println("Original change:", change)
 		transformedChange, transformErr := TransformChange(change, prevChanges)
 		if transformErr != nil {
-			// Change was not applied (duplicate), move on to the next one.
-			log.Println("Change was not applied (duplicate).")
-			continue
+			// A change had an invalid type.
+			return transformErr
 		}
 
 		log.Println("Transformed change:", transformedChange)
@@ -62,10 +62,12 @@ func TransformChange(newChange obj.Change, prevChanges []obj.Change) (obj.Change
 		case change.Type == "delete" && newChange.Type == "delete":
 			// deletion on deletion
 			newDel, err := opTransform.TransformDeletions(newChange.ChangeToDel(), change.ChangeToDel())
-			if err != nil {
-				return newChange, err
+			if err == nil {
+				// only update the position if no duplicate deletion error was returned
+				newChange.Position = newDel.Pos
 			}
-			newChange.Position = newDel.Pos
+		default:
+			return newChange, errors.New("invalid change type: " + newChange.Type)
 		}
 	}
 	return newChange, nil
@@ -78,13 +80,13 @@ func ApplyChange(change obj.Change, fileContent string) (string, error) {
 	case "insert":
 		if change.Position < 0 || change.Position > len(fileContent) {
 			// Index out of range.
-			return fileContent, errors.New("index out of range")
+			return fileContent, fmt.Errorf("index %d out of range", change.Position)
 		}
 		return (fileContent[:change.Position] + change.Value + fileContent[change.Position:]), nil
 	case "delete":
 		if change.Position < 0 || change.Position >= len(fileContent) {
 			// Index out of range.
-			return fileContent, errors.New("index out of range")
+			return fileContent, fmt.Errorf("index %d out of range", change.Position)
 		}
 		return (fileContent[:change.Position] + fileContent[change.Position+1:]), nil
 	default:

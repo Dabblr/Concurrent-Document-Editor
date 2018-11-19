@@ -3,17 +3,27 @@ package database
 import (
 	"testing"
 
-	obj "github.com/jcgallegdup/Concurrent-Document-Editor/objects"
+	obj "github.com/Dabblr/Concurrent-Document-Editor/objects"
 )
 
 // Tests that CreateEmptyFile returns the value of FileCounter incremented by 1.
 func TestCreateEmptyFileReturnsIncrementedCounter(t *testing.T) {
 	var m MockDB
 	expID := m.FileCounter + 1
-	id := m.CreateEmptyFile("fileName", "userName")
+	id, _ := m.CreateEmptyFile("fileName", "userName")
 
 	if id != expID {
 		t.Errorf("Expected id %d from CreateEmptyFile but got %d.", expID, id)
+	}
+}
+
+// Tests that CreateEmptyFile returns a revision number = 1.
+func TestCreateEmptyFileReturnsRevisionNumberEqualOne(t *testing.T) {
+	var m MockDB
+	_, revisionNumber := m.CreateEmptyFile("fileName", "userName")
+
+	if revisionNumber != 1 {
+		t.Errorf("Expected revisionNumber 1 from CreateEmptyFile but got %d.", revisionNumber)
 	}
 }
 
