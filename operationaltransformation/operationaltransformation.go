@@ -3,7 +3,7 @@ package operationaltransformation
 import (
 	"errors"
 
-	ops "github.com/jcgallegdup/Concurrent-Document-Editor/operations"
+	ops "github.com/Dabblr/Concurrent-Document-Editor/operations"
 )
 
 // TransformInsertions transforms the a new insertion operation on top of a previous insertion operation

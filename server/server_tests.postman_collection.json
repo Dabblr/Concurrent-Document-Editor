@@ -1,0 +1,1090 @@
+{
+	"info": {
+		"_postman_id": "762aa395-d39e-483c-b7f0-8db8214b2aab",
+		"name": "server_tests",
+		"description": "Contains tests for all of the server endpoints.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "create_file_tests",
+			"item": [
+				{
+					"name": "TestFileCreationNoBody",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3653a8d2-02a4-4109-8bbd-e5735cc3a029",
+								"exec": [
+									"pm.test(\"Response status is 400 Bad Request\", function() {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Response has no body\", function() {",
+									"   pm.response.to.not.be.withBody; ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/files",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"files"
+							]
+						},
+						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `/files` endpoint has no body."
+					},
+					"response": []
+				},
+				{
+					"name": "TestFileCreationInvalidJSON",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "8a96dcfc-1e0c-4576-a1b3-0f05e8fe4928",
+								"exec": [
+									"pm.test(\"Response status is 400 Bad Request\", function() {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Response has no body\", function() {",
+									"   pm.response.to.not.be.withBody; ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\t\n\t\"user\":\"user1\",\n\tname: \"file1.txt\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/files",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"files"
+							]
+						},
+						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `/files` endpoint contains invalid/poorly formed JSON."
+					},
+					"response": []
+				},
+				{
+					"name": "TestFileCreationMissingUser",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "72df0068-dd2f-40a0-8a29-c4d37aadbc9c",
+								"exec": [
+									"pm.test(\"Response status is 400 Bad Request\", function() {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Response has no body\", function() {",
+									"   pm.response.to.not.be.withBody; ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\t\n\t\"name\": \"file1.txt\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/files",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"files"
+							]
+						},
+						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `/files` endpoint is missing a `user` field in the JSON body."
+					},
+					"response": []
+				},
+				{
+					"name": "TestFileCreationMissingFileName",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "4ff7686f-c96c-4ec4-bd68-ac190810b5fd",
+								"exec": [
+									"pm.test(\"Response status is 400 Bad Request\", function() {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Response has no body\", function() {",
+									"   pm.response.to.not.be.withBody; ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\t\n\t\"user\":\"user1\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/files",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"files"
+							]
+						},
+						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `/files` endpoint is missing a `name` field in the JSON body."
+					},
+					"response": []
+				},
+				{
+					"name": "TestFileCreationSuccess",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5b4e9052-40a5-4e3f-861d-f76400a2dd6d",
+								"exec": [
+									"// Tests that the response status is 201 Created.",
+									"pm.test(\"Response status is 201 Created\", function() {",
+									"   pm.response.to.have.status(201);",
+									"});",
+									"",
+									"// Tests that the response contains a valid JSON body.",
+									"pm.test(\"Response contains a valid JSON body\", function() {",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"// Tests that the response JSON contains a file ID which is an integer.",
+									"pm.test(\"JSON response contains an integer file ID\", function() {",
+									"    var jsonData = pm.response.json();",
+									"    pm.response.to.have.jsonBody(\"id\"); ",
+									"    pm.expect(jsonData.id.isInteger()).to.be.true;",
+									"    pm.globals.set(\"id\", jsonData.id);",
+									"    pm.globals.set(\"invalid_id\", jsonData.id + 1)",
+									"});",
+									"",
+									"// Tests that the response JSON contains a revision number which is 1.",
+									"pm.test(\"JSON response contains a revision number = 1\", function () {",
+									"   var jsonData = pm.response.json();",
+									"   pm.response.to.have.jsonBody(\"revision_number\");",
+									"   pm.expect(jsonData.revision_number).to.eql(1);",
+									"});",
+									"",
+									"// Tests that the response JSON contains a username which matches the username in the request.",
+									"pm.test(\"JSON response contains a username that matches request\", function () {",
+									"   var reqData = JSON.parse(request.data);",
+									"   var respData = pm.response.json();",
+									"   pm.response.to.have.jsonBody(\"user\");",
+									"   pm.expect(respData.user).to.eql(reqData.user)",
+									"});",
+									"",
+									"// Tests that the response JSON contains a filename which matches the filename in the request.",
+									"pm.test(\"JSON response contains a username that matches request\", function () {",
+									"   var reqData = JSON.parse(request.data);",
+									"   var respData = pm.response.json();",
+									"   pm.response.to.have.jsonBody(\"name\");",
+									"   pm.expect(respData.name).to.eql(reqData.name)",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\t\n\t\"user\":\"user1\",\n\t\"name\": \"file1.txt\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/files",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"files"
+							]
+						},
+						"description": "Verifies that the response has a 201 status code and contains the appropriate JSON after a successful POST request to the `/files` endpoint."
+					},
+					"response": []
+				}
+			],
+			"description": "Contains tests for the file creation endpoint (POST request to `/files`).",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ac5d045b-f7b9-4574-b707-d0114be53134",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "282ca5f6-30a6-42df-a4b2-9602b90be721",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "post_updates_tests",
+			"item": [
+				{
+					"name": "TestPostUpdatesNonIntegerId",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b9d05e11-7d8b-4d3a-bd72-9f1b3ee01834",
+								"exec": [
+									"pm.test(\"Response status is 400 Bad Request\", function() {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Response has no body\", function() {",
+									"   pm.response.to.not.be.withBody; ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"user\":\"user1\",\n\t\"id\": \"nonIntegerId\",\n\t\"revision_number\":1,\n\t\"name\": \"file1.txt\",\n\t\"changes\":[\n\t\t{\n\t\t\t\"type\":\"insert\",\n\t\t\t\"position\":0,\n\t\t\t\"value\":\"x\"\n\t\t},\n\t\t{\n\t\t\t\"type\":\"insert\",\n\t\t\t\"position\":1,\n\t\t\t\"value\":\"y\"\n\t\t}\n\t]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/files/nonIntegerId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"files",
+								"nonIntegerId"
+							]
+						},
+						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `/files/{id}` endpoint contains an id that is not an integer."
+					},
+					"response": []
+				},
+				{
+					"name": "TestPostUpdatesInvalidId",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e7ce4a0e-9b44-4143-9c32-43771ecdb2bc",
+								"exec": [
+									"pm.test(\"Response status is 400 Bad Request\", function() {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Response has no body\", function() {",
+									"   pm.response.to.not.be.withBody; ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"user\":\"user1\",\n\t\"id\":{{invalid_id}},\n\t\"revision_number\":1,\n\t\"name\": \"file1.txt\",\n\t\"changes\":[\n\t\t{\n\t\t\t\"type\":\"insert\",\n\t\t\t\"position\":0,\n\t\t\t\"value\":\"x\"\n\t\t},\n\t\t{\n\t\t\t\"type\":\"insert\",\n\t\t\t\"position\":1,\n\t\t\t\"value\":\"y\"\n\t\t}\n\t]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/files/{{invalid_id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"files",
+								"{{invalid_id}}"
+							]
+						},
+						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `/files/{id}` endpoint contains an invalid id for which no file exists on the server."
+					},
+					"response": []
+				},
+				{
+					"name": "TestPostUpdatesNoBody",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/files/{{id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"files",
+								"{{id}}"
+							]
+						},
+						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `/files/{id}` endpoint has no body."
+					},
+					"response": []
+				},
+				{
+					"name": "TestPostUpdatesInvalidJSON",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "ef5f774c-f072-4054-87f4-881bb0b73f6d",
+								"exec": [
+									"pm.test(\"Response status is 400 Bad Request\", function() {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Response has no body\", function() {",
+									"   pm.response.to.not.be.withBody; ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"user\":\"user1\",\n\t\"id\":{{invalid_id}},\n\t\"revision_number\":1,\n\t\"name\": \"file1.txt\",\n\t\"changes\":[\n\t\t{\n\t\t\t\"type\":\"insert\",\n\t\t\t\"position\":0,\n\t\t\t\"value\":\"x\"\n\t\t}\n\t\t{\n\t\t\t\"type\":\"insert\",\n\t\t\t\"position\":1,\n\t\t\t\"value\":\"y\"\n\t\t}\n\t]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/files/{{id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"files",
+								"{{id}}"
+							]
+						},
+						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `/files/{id}` endpoint contains invalid/poorly formed JSON."
+					},
+					"response": []
+				},
+				{
+					"name": "TestPostUpdatesMismatchedId",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b00c7a79-a570-4603-b4e0-ac7bfa5c86d4",
+								"exec": [
+									"pm.test(\"Response status is 400 Bad Request\", function() {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Response has no body\", function() {",
+									"   pm.response.to.not.be.withBody; ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"user\":\"user1\",\n\t\"id\":{{invalid_id}},\n\t\"revision_number\":1,\n\t\"name\": \"file1.txt\",\n\t\"changes\":[\n\t\t{\n\t\t\t\"type\":\"insert\",\n\t\t\t\"position\":0,\n\t\t\t\"value\":\"x\"\n\t\t},\n\t\t{\n\t\t\t\"type\":\"insert\",\n\t\t\t\"position\":1,\n\t\t\t\"value\":\"y\"\n\t\t}\n\t]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/files/{{id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"files",
+								"{{id}}"
+							]
+						},
+						"description": "Verifies that the response status code is 400 Bad Request when the id in the POST request to the `/files/{id}` endpoint does not match the id in the request body."
+					},
+					"response": []
+				},
+				{
+					"name": "TestPostUpdatesMissingUser",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "bd29db09-85ad-4ebc-88bf-e78524c8cfa1",
+								"exec": [
+									"pm.test(\"Response status is 400 Bad Request\", function() {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Response has no body\", function() {",
+									"   pm.response.to.not.be.withBody; ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\":{{id}},\n\t\"revision_number\":1,\n\t\"name\": \"file1.txt\",\n\t\"changes\":[\n\t\t{\n\t\t\t\"type\":\"insert\",\n\t\t\t\"position\":0,\n\t\t\t\"value\":\"x\"\n\t\t},\n\t\t{\n\t\t\t\"type\":\"insert\",\n\t\t\t\"position\":1,\n\t\t\t\"value\":\"y\"\n\t\t}\n\t]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/files/{{id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"files",
+								"{{id}}"
+							]
+						},
+						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `/files` endpoint is missing a `user` field in the JSON body."
+					},
+					"response": []
+				},
+				{
+					"name": "TestPostUpdatesMissingFileId",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "935bb547-5536-4238-8ca3-371e0ac2fdea",
+								"exec": [
+									"pm.test(\"Response status is 400 Bad Request\", function() {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Response has no body\", function() {",
+									"   pm.response.to.not.be.withBody; ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"user\":\"user1\",\n\t\"revision_number\":1,\n\t\"name\": \"file1.txt\",\n\t\"changes\":[\n\t\t{\n\t\t\t\"type\":\"insert\",\n\t\t\t\"position\":0,\n\t\t\t\"value\":\"x\"\n\t\t},\n\t\t{\n\t\t\t\"type\":\"insert\",\n\t\t\t\"position\":1,\n\t\t\t\"value\":\"y\"\n\t\t}\n\t]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/files/{{id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"files",
+								"{{id}}"
+							]
+						},
+						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `/files/{id}` endpoint is missing an `id` field in the JSON body."
+					},
+					"response": []
+				},
+				{
+					"name": "TestPostUpdatesMissingRevisionNumber",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "264cebf3-de3f-4cf4-951a-79373007a8b5",
+								"exec": [
+									"pm.test(\"Response status is 400 Bad Request\", function() {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Response has no body\", function() {",
+									"   pm.response.to.not.be.withBody; ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"user\":\"user1\",\n\t\"id\":{{id}},\n\t\"name\": \"file1.txt\",\n\t\"changes\":[\n\t\t{\n\t\t\t\"type\":\"insert\",\n\t\t\t\"position\":0,\n\t\t\t\"value\":\"x\"\n\t\t},\n\t\t{\n\t\t\t\"type\":\"insert\",\n\t\t\t\"position\":1,\n\t\t\t\"value\":\"y\"\n\t\t}\n\t]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/files/{{id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"files",
+								"{{id}}"
+							]
+						},
+						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `/files/{id}` endpoint is missing a `revision_number` field in the JSON body."
+					},
+					"response": []
+				},
+				{
+					"name": "TestPostUpdatesInvalidChange",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b6c5ac8c-f64d-4a82-9de3-83515db11093",
+								"exec": [
+									"pm.test(\"Response status is 400 Bad Request\", function() {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Response has no body\", function() {",
+									"   pm.response.to.not.be.withBody; ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"user\":\"user1\",\n\t\"id\":{{id}},\n\t\"revision_number\":1,\n\t\"name\": \"file1.txt\",\n\t\"changes\":[\n\t\t{\n\t\t\t\"type\":\"insert\",\n\t\t\t\"position\":0,\n\t\t\t\"value\":\"x\"\n\t\t},\n\t\t{\n\t\t\t\"type\":\"insert\",\n\t\t\t\"position\":-1,\n\t\t\t\"value\":\"y\"\n\t\t}\n\t]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/files/{{id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"files",
+								"{{id}}"
+							]
+						},
+						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `/files/{id}` endpoint contains an invalid change."
+					},
+					"response": []
+				},
+				{
+					"name": "TestPostUpdatesSuccess",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "ef7775b8-0018-46b3-993c-2e8c1c45e1b9",
+								"exec": [
+									"pm.test(\"Response status is 200 OK\", function() {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has no body\", function() {",
+									"   pm.response.to.not.be.withBody; ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"user\":\"user1\",\n\t\"id\":{{id}},\n\t\"revision_number\":1,\n\t\"name\": \"file1.txt\",\n\t\"changes\":[\n\t\t{\n\t\t\t\"type\":\"insert\",\n\t\t\t\"position\":0,\n\t\t\t\"value\":\"x\"\n\t\t},\n\t\t{\n\t\t\t\"type\":\"insert\",\n\t\t\t\"position\":1,\n\t\t\t\"value\":\"y\"\n\t\t}\n\t]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/files/{{id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"files",
+								"{{id}}"
+							]
+						},
+						"description": "Verifies that the response status code is 200 OK when a POST request to the `/files/{id}` endpoint is successful."
+					},
+					"response": []
+				},
+				{
+					"name": "TestPostUpdateSuccessDelete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0f815329-aeeb-4067-bfa0-c84f50eb20f5",
+								"exec": [
+									"pm.test(\"Response status is 200 OK\", function() {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has no body\", function() {",
+									"   pm.response.to.not.be.withBody; ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"user\":\"user1\",\n\t\"id\":{{id}},\n\t\"revision_number\":1,\n\t\"name\": \"file1.txt\",\n\t\"changes\":[\n\t\t{\n\t\t\t\"type\":\"insert\",\n\t\t\t\"position\":0,\n\t\t\t\"value\":\"x\"\n\t\t},\n\t\t{\n\t\t\t\"type\":\"delete\",\n\t\t\t\"position\":0,\n\t\t\t\"value\":\"x\"\n\t\t}\n\t]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/files/{{id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"files",
+								"{{id}}"
+							]
+						},
+						"description": "Verifies that the response status code is 200 OK when a POST request to the `/files/{id}` endpoint containing a delete operation is successful."
+					},
+					"response": []
+				}
+			],
+			"description": "Contains tests for the Post Updates endpoint (POST request to `/file/{id}`).",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "a01e628b-9639-463c-91b4-1a264438675b",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "83c15681-a414-4e90-84d4-133190dabfd8",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "get_file_tests",
+			"item": [
+				{
+					"name": "TestGetFileNonIntegerId",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "ce48525d-f337-47dc-83a4-c4a931365744",
+								"exec": [
+									"pm.test(\"Response status is 400 Bad Request\", function() {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Response has no body\", function() {",
+									"   pm.response.to.not.be.withBody; ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/files/nonIntegerId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"files",
+								"nonIntegerId"
+							]
+						},
+						"description": "Verifies that the response status code is 400 Bad Request when a GET request to the `/files/{id}` endpoint contains an id that is not an integer."
+					},
+					"response": []
+				},
+				{
+					"name": "TestGetFileInvalidId",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "4023fd98-27dc-4eba-af7a-ab25c77d21ee",
+								"exec": [
+									"pm.test(\"Response status is 400 Bad Request\", function() {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Response has no body\", function() {",
+									"   pm.response.to.not.be.withBody; ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/files/{{invalid_id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"files",
+								"{{invalid_id}}"
+							]
+						},
+						"description": "Verifies that the response status code is 400 Bad Request when a GET request to the `/files/{id}` endpoint contains an invalid id."
+					},
+					"response": []
+				},
+				{
+					"name": "TestGetFileValidId",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "39c84e2f-1d49-4aa0-9ca3-476a4d0edd1e",
+								"exec": [
+									"// Tests that the response status is 200 OK.",
+									"pm.test(\"Response status is 200 OK\", function() {",
+									"   pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Tests that the response contains a valid JSON body.",
+									"pm.test(\"Response contains a valid JSON body\", function() {",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"// Tests that the response JSON contains a file ID which matches the request ID.",
+									"pm.test(\"JSON response contains a file ID that matches the request\", function() {",
+									"    var jsonData = pm.response.json();",
+									"    pm.response.to.have.jsonBody(\"id\"); ",
+									"    pm.expect(jsonData.id).to.eql(pm.globals.get(\"id\"));",
+									"});",
+									"",
+									"// Tests that the response JSON contains a revision number which is an integer.",
+									"pm.test(\"JSON response contains an integer revision number\", function() {",
+									"    var jsonData = pm.response.json();",
+									"    pm.response.to.have.jsonBody(\"revision_number\"); ",
+									"    pm.expect(jsonData.id.isInteger()).to.be.true;",
+									"});",
+									"",
+									"// Tests that the response contains a filename.",
+									"pm.test(\"JSON response contains a file name\", function(){",
+									"    var jsonData = pm.response.json();",
+									"    pm.response.to.have.jsonBody(\"revision_number\"); ",
+									"});",
+									"",
+									"// Tests that the response contains a field for file content.",
+									"pm.test(\"JSON response contains file content\", function(){",
+									"    var jsonData = pm.response.json();",
+									"    pm.response.to.have.jsonBody(\"content\"); ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/files/{{id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"files",
+								"{{id}}"
+							]
+						},
+						"description": "Verifies that the response has a 200 status code and contains the appropriate JSON after a successful GET request to the `/files/{id}` endpoint."
+					},
+					"response": []
+				}
+			],
+			"description": "Contains tests for the Get File endpoint (GET request to `/file/{id}`).",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "dfaf1dcb-71b5-4213-b75b-4b84841d8787",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "90f7a774-6ea9-429f-a7e5-69d91627a07c",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "68c9a6e5-2535-4b1c-8c68-73c489e874ba",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "b7f0dd4e-710d-4b7c-9610-968f029605fe",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "7a626478-f1cb-46f7-9d0b-af6bbe7d3d08",
+			"value": "",
+			"type": "string",
+			"disabled": true
+		},
+		{
+			"id": "62f2e5b1-755e-4bd2-8b73-1f401be35fc1",
+			"value": "",
+			"type": "string",
+			"disabled": true
+		},
+		{
+			"id": "08d82fa7-072f-46ca-8afd-bd5ae57ad17b",
+			"value": "",
+			"type": "string",
+			"disabled": true
+		}
+	]
+}
