@@ -1,6 +1,5 @@
 package database
 
-// TODO: foreign key constraints seem to be ignored?
 import (
 	"fmt"
 	"io/ioutil"
@@ -119,15 +118,21 @@ func (db *Database) GetFileContent(id int) (obj.File, error) {
 	}
 
 	// TODO: other file parameters
-	rows, err := conn.Query("SELECT data FROM files WHERE id=?", id)
-	// defer rows.Close() FIXME ????
+	rows, err := conn.Query("SELECT name, data, owner FROM files WHERE id=?", id)
+	if rows != nil {
+		defer rows.Close()
+	}
 	if err != nil {
 		return f, err
 	}
 	var data string
-	rows.Scan(&data)
+	var user string
+	var name string
+	rows.Scan(&name, &data, &user)
 
 	f.Content = data
+	f.Name = name
+	f.User = user
 	f.ID = id
 
 	return f, nil
@@ -182,11 +187,6 @@ func (db *Database) InsertChanges(id int, changes []obj.Change) error {
 	if err != nil {
 		return err
 	}
-	// err = conn.Exec("PRAGMA foreign_keys = ON")
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	return err
-	// }
 
 	row, err := conn.Query("SELECT MAX(rev_number) FROM changes WHERE file = ?", id)
 	defer row.Close()

@@ -7,7 +7,7 @@ import (
 // Database contains all the functions that interact with the database.
 type DatabaseInterface interface {
 	// Creates a new file, stores it in the database, and returns the id for it.
-	CreateEmptyFile(fileName string, userName string) (int, error)
+	CreateEmptyFile(fileName string, userID string) (int, error)
 
 	// Returns the latest revision file content for the given file id.
 	// An error is returned if no file with the given id exists.
