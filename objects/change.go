@@ -3,7 +3,7 @@ package objects
 import (
 	"fmt"
 
-	ops "github.com/jcgallegdup/Concurrent-Document-Editor/operations"
+	ops "github.com/Dabblr/Concurrent-Document-Editor/operations"
 )
 
 // Change represents each individual change (insertion/deletion).
@@ -23,10 +23,7 @@ func NewChange(changeType string, position int, value string) Change {
 
 // Equals defines what makes two Change objects equal.
 func (change *Change) Equals(change2 Change) bool {
-	if change.Type == change2.Type && change.Position == change2.Position && change.Value == change2.Value {
-		return true
-	}
-	return false
+	return change.Type == change2.Type && change.Position == change2.Position && change.Value == change2.Value
 }
 
 // IsValid checks that only a single character is being inserted/deleted and the type is insert or delete.

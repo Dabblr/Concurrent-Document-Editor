@@ -1,7 +1,7 @@
 package database
 
 import (
-	obj "github.com/jcgallegdup/Concurrent-Document-Editor/objects"
+	obj "github.com/Dabblr/Concurrent-Document-Editor/objects"
 )
 
 // Database contains all the functions that interact with the database.
