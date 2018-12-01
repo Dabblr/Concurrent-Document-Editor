@@ -38,21 +38,21 @@ func CreateEmptyDb(name string) Database {
 
 // CreateEmptyFile creates a new file with no contents, gives ownership to userName
 // Returns the new file's ID
-func (db *Database) CreateEmptyFile(fileName string, userID int) (int, error) {
+func (db *Database) CreateEmptyFile(fileName string, userID int) (int, int, error) {
 	conn, err := sqlite3.Open(db.Path)
 	defer conn.Close()
 	if err != nil {
-		return -1, err
+		return -1, -1, err
 	}
 	err = conn.Exec("PRAGMA foreign_keys = ON")
 	if err != nil {
-		return -1, err
+		return -1, -1, err
 	}
 
 	statement, err := conn.Prepare("INSERT INTO files (filename, owner) VALUES(?, ?)")
 	defer statement.Close()
 	if err != nil {
-		return -1, err
+		return -1, -1, err
 	}
 	statement.Exec(fileName, userID)
 
@@ -62,17 +62,17 @@ func (db *Database) CreateEmptyFile(fileName string, userID int) (int, error) {
 		defer rows.Close()
 	}
 	if err != nil {
-		return -1, err
+		return -1, -1, err
 	}
 	var fileID int
 	rows.Scan(&fileID)
 
 	if fileID == 0 {
 		err = fmt.Errorf("invalid user ID %v", userID)
-		return -1, err
+		return -1, -1, err
 	}
 
-	return fileID, nil
+	return fileID, 1, nil
 }
 
 // CreateUser creates a user with the given username
