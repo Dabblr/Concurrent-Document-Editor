@@ -71,17 +71,6 @@ func TestGetFileContentReturnsErrorWithBadFileIDReal(t *testing.T) {
 		t.Error("Expected GetFileContent to produce an error, but it was nil.")
 	}
 }
-
-func TestInsertChangesUpdatesChangesReal(t *testing.T) {
-	db := Database{Path: path}
-
-	err := db.InsertChanges(ID, expectedChanges)
-
-	if err != nil {
-		t.Errorf("InsertChanges threw an error %s", err)
-	}
-}
-
 func TestInsertChangesDoesNotUpdateWhenChangesEmptyReal(t *testing.T) {
 	db := Database{Path: path}
 	var emptyChanges []obj.Change
@@ -92,7 +81,6 @@ func TestInsertChangesDoesNotUpdateWhenChangesEmptyReal(t *testing.T) {
 		t.Errorf("InsertChanges threw an error on empty array %v", err)
 	}
 }
-
 func TestGetChangesSinceRevisionReturnsEmptyArrayIfNoChangesReal(t *testing.T) {
 	db := Database{Path: path}
 	changes, _ := db.GetChangesSinceRevision(ID, 1)
@@ -105,6 +93,16 @@ func TestGetChangesSinceRevisionReturnsEmptyArrayIfNoChangesReal(t *testing.T) {
 
 	if len(changes) != 0 {
 		t.Errorf("GetChangesSinceRevision was supposed to return an empty array. Instead we got %+v", changes)
+	}
+}
+
+func TestInsertChangesUpdatesChangesReal(t *testing.T) {
+	db := Database{Path: path}
+
+	err := db.InsertChanges(ID, expectedChanges)
+
+	if err != nil {
+		t.Errorf("InsertChanges threw an error %s", err)
 	}
 }
 

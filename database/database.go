@@ -117,7 +117,7 @@ func (db *Database) GetFileContent(id int) (obj.File, error) {
 		return f, err
 	}
 
-	rows, err := conn.Query("SELECT name, data, owner FROM files WHERE id=?", id)
+	rows, err := conn.Query("SELECT filename, data, owner FROM files WHERE id=?", id)
 	if rows != nil {
 		defer rows.Close()
 	}
