@@ -32,6 +32,15 @@ func TestCreateEmptyFileReturnsIncrementedCounterReal(t *testing.T) {
 	}
 }
 
+func TestCreateEmptyFileReturnsRevisionOne(t *testing.T) {
+	db := Database{Path: path}
+	_, revID, _ := db.CreateEmptyFile("TESTFILE.TEST", ID)
+
+	if revID != ID {
+		t.Errorf("Expected revision to be 1, instead it was %d", revID)
+	}
+}
+
 func TestCreateEmptyFileReturnsErrorWhenBadUserReal(t *testing.T) {
 	db := Database{Path: path}
 	_, _, err := db.CreateEmptyFile("TESTFILE.TEST", invalidID)
@@ -83,7 +92,7 @@ func TestInsertChangesDoesNotUpdateWhenChangesEmptyReal(t *testing.T) {
 }
 func TestGetChangesSinceRevisionReturnsEmptyArrayIfNoChangesReal(t *testing.T) {
 	db := Database{Path: path}
-	changes, _ := db.GetChangesSinceRevision(ID, 1)
+	changes, err := db.GetChangesSinceRevision(ID, 1)
 
 	for i, c := range changes {
 		fmt.Print("F")
@@ -91,6 +100,9 @@ func TestGetChangesSinceRevisionReturnsEmptyArrayIfNoChangesReal(t *testing.T) {
 		fmt.Printf("%v\n", c)
 	}
 
+	if err != nil {
+		t.Errorf("GetChangesSinceRevision threw an error instead of an empty array. %v", err)
+	}
 	if len(changes) != 0 {
 		t.Errorf("GetChangesSinceRevision was supposed to return an empty array. Instead we got %+v", changes)
 	}
@@ -117,8 +129,11 @@ func TestGetChangesSinceRevisionReturnsErrorWithBadFileIDReal(t *testing.T) {
 
 func TestGetChangesSinceRevisionReturnsChangeArrayReal(t *testing.T) {
 	db := Database{Path: path}
-	changes, _ := db.GetChangesSinceRevision(ID, 0)
+	changes, err := db.GetChangesSinceRevision(ID, 0)
 
+	if err != nil {
+		t.Errorf("GetChangesSinceRevision threw an error %v", err)
+	}
 	if len(changes) != len(expectedChanges) {
 		t.Errorf("GetChangesSinceRevision returned an array with the wrong length: %v, expecetd: %v", changes, expectedChanges)
 	} else {

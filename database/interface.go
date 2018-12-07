@@ -6,7 +6,7 @@ import (
 
 // Interface contains all the functions that interact with the database.
 type Interface interface {
-	// Creates a new file, stores it in the database, and returns the id for it.
+	// Creates a new file, stores it in the database, and returns the id for it as well as the latest revision.
 	CreateEmptyFile(fileName string, userID string) (int, int, error)
 
 	// Returns the latest revision file content for the given file id.

@@ -1,6 +1,7 @@
 package database
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -37,7 +38,7 @@ func CreateEmptyDb(name string) Database {
 }
 
 // CreateEmptyFile creates a new file with no contents, gives ownership to userName
-// Returns the new file's ID
+// Returns the new file's ID, and the file's latest revision (0) (both -1 in the event  of an error)
 func (db *Database) CreateEmptyFile(fileName string, userID int) (int, int, error) {
 	conn, err := sqlite3.Open(db.Path)
 	defer conn.Close()
@@ -117,7 +118,10 @@ func (db *Database) GetFileContent(id int) (obj.File, error) {
 		return f, err
 	}
 
-	rows, err := conn.Query("SELECT filename, data, owner FROM files WHERE id=?", id)
+	rows, err := conn.Query(`
+		SELECT filename, data, owner
+		FROM files
+		WHERE id=?`, id)
 	if rows != nil {
 		defer rows.Close()
 	}
@@ -145,16 +149,35 @@ func (db *Database) GetChangesSinceRevision(id int, revisionNumber int) ([]obj.C
 		return nil, err
 	}
 
-	revs, err := conn.Query("SELECT DISTINCT changes.file, rev_number, position, character FROM revisions JOIN changes WHERE changes.file = ? AND number > ?", id, revisionNumber)
-	if revs != nil {
-		defer revs.Close()
-	}
+	f, err := conn.Query(
+		`SELECT id
+		FROM files
+		WHERE id = ?`, id)
 	if err != nil {
 		return nil, err
+	}
+	var fileCheck int
+	f.Scan(&fileCheck)
+	if fileCheck == 0 {
+		return nil, errors.New("File not found")
 	}
 
 	var next error
 	var changes []obj.Change
+
+	revs, err := conn.Query(
+		`SELECT DISTINCT changes.file, rev_number, position, character
+		FROM revisions
+			JOIN changes
+		WHERE changes.file = ? AND number > ?`, id, revisionNumber)
+	if revs != nil {
+		defer revs.Close()
+	} else {
+		return changes, nil
+	}
+	if err != nil {
+		return nil, err
+	}
 
 	for next == nil {
 		var fileID int
@@ -187,22 +210,26 @@ func (db *Database) InsertChanges(id int, changes []obj.Change) error {
 		return err
 	}
 
-	row, err := conn.Query("SELECT MAX(rev_number) FROM changes WHERE file = ?", id)
+	row, err := conn.Query(
+		`SELECT MAX(rev_number)
+		FROM changes
+		WHERE file = ?`, id)
 	defer row.Close()
 	if err != nil {
 		return err
 	}
 
-	firstChange := false
 	var revNum int
-	if !firstChange {
-		row.Scan(&revNum)
-	}
+	row.Scan(&revNum)
 	revNum++
 
-	conn.Exec("INSERT INTO revisions (file, number) VALUES (?, ?)", id, revNum)
+	conn.Exec(
+		`INSERT INTO revisions (file, number)
+		VALUES (?, ?)`, id, revNum)
 
-	statement, err := conn.Prepare("INSERT INTO changes (file, rev_number, position, character) VALUES (?, ?, ?, ?)")
+	statement, err := conn.Prepare(
+		`INSERT INTO changes (file, rev_number, position, character)
+		VALUES (?, ?, ?, ?)`)
 	if err != nil {
 		return err
 	}
