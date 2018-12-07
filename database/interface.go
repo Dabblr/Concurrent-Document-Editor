@@ -4,8 +4,8 @@ import (
 	obj "github.com/Dabblr/Concurrent-Document-Editor/objects"
 )
 
-// Database contains all the functions that interact with the database.
-type DatabaseInterface interface {
+// Interface contains all the functions that interact with the database.
+type Interface interface {
 	// Creates a new file, stores it in the database, and returns the id for it.
 	CreateEmptyFile(fileName string, userID string) (int, int, error)
 

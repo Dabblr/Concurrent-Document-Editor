@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	obj "github.com/jcgallegdup/Concurrent-Document-Editor/objects"
+	obj "github.com/Dabblr/Concurrent-Document-Editor/objects"
 	"github.com/mxk/go-sqlite/sqlite3"
 )
 

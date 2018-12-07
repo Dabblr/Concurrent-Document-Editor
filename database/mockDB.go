@@ -7,6 +7,9 @@ import (
 	obj "github.com/Dabblr/Concurrent-Document-Editor/objects"
 )
 
+// The "limit" on the number of files that can be created in the mock DB.
+const maxFiles = 100
+
 // MockDB mocks the database functions for unit testing.
 type MockDB struct {
 	// Keeps track of how many files have been created to generate new ids.
@@ -18,9 +21,13 @@ type MockDB struct {
 }
 
 // CreateEmptyFile increments the FileCounter and returns it to mock creating a file.
-func (m *MockDB) CreateEmptyFile(fileName string, userName string) (int, int) {
+// Returns an error if we have already created the maximum number of files (arbitrarily imposed limit to test error response)
+func (m *MockDB) CreateEmptyFile(fileName string, userName string) (int, int, error) {
+	if m.FileCounter >= maxFiles {
+		return -1, -1, errors.New("not enough space to create a new file")
+	}
 	m.FileCounter++
-	return m.FileCounter, 1
+	return m.FileCounter, 1, nil
 }
 
 // GetFileContent returns a File object containing FileContent.
@@ -34,19 +41,36 @@ func (m *MockDB) GetFileContent(id int) (obj.File, error) {
 }
 
 // GetChangesSinceRevision returns all changes recorded in the last update.
-func (m *MockDB) GetChangesSinceRevision(id int, revisionNumber int) []obj.Change {
+// An error is returned if id <= 0 or id > FileCounter.
+func (m *MockDB) GetChangesSinceRevision(id int, revisionNumber int) ([]obj.Change, error) {
+	if id <= 0 || id > m.FileCounter {
+		// Invalid id.
+		return []obj.Change{}, errors.New("invalid file id")
+	}
 	changes := m.Changes
 	m.Changes = []obj.Change{}
-	return changes
+	return changes, nil
 }
 
 // InsertChanges mocks inserting an array of changes to a file in the database.
-func (m *MockDB) InsertChanges(id int, changes []obj.Change) {
+// An error is returned if id <= 0 or id > FileCounter.
+func (m *MockDB) InsertChanges(id int, changes []obj.Change) error {
+	if id <= 0 || id > m.FileCounter {
+		// Invalid id.
+		return errors.New("invalid file id")
+	}
 	m.Changes = append(m.Changes, changes...)
+	return nil
 }
 
 // UpdateFileContent mocks updating the file content for the given file in the database.
-func (m *MockDB) UpdateFileContent(id int, fileContent string) {
+// An error is returned if id <= 0 or id > FileCounter.
+func (m *MockDB) UpdateFileContent(id int, fileContent string) error {
+	if id <= 0 || id > m.FileCounter {
+		// Invalid id.
+		return errors.New("invalid file id")
+	}
 	m.FileContent = fileContent
 	log.Println("New file content:", fileContent)
+	return nil
 }

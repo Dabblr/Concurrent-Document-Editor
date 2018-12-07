@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	obj "github.com/jcgallegdup/Concurrent-Document-Editor/objects"
+	obj "github.com/Dabblr/Concurrent-Document-Editor/objects"
 )
 
 const path = "../updates.db"
@@ -25,7 +25,7 @@ func TestCreateUserReturnsIncrementedCounterReal(t *testing.T) {
 
 func TestCreateEmptyFileReturnsIncrementedCounterReal(t *testing.T) {
 	db := Database{Path: path}
-	fileID, _ := db.CreateEmptyFile("TESTFILE.TEST", ID)
+	fileID, _, _ := db.CreateEmptyFile("TESTFILE.TEST", ID)
 
 	if fileID != ID {
 		t.Errorf("Expected fileID to be 1, instead it was %d", fileID)
@@ -34,7 +34,7 @@ func TestCreateEmptyFileReturnsIncrementedCounterReal(t *testing.T) {
 
 func TestCreateEmptyFileReturnsErrorWhenBadUserReal(t *testing.T) {
 	db := Database{Path: path}
-	_, err := db.CreateEmptyFile("TESTFILE.TEST", invalidID)
+	_, _, err := db.CreateEmptyFile("TESTFILE.TEST", invalidID)
 
 	if err == nil {
 		t.Errorf("Expected CreateEmptyFile to produce an error, but it was nil.")

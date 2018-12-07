@@ -12,10 +12,14 @@ import (
 
 // ApplyUpdate applies all the changes contained in a revision to a file.
 // Returns an error if a change in the revision is invalid.
-func ApplyUpdate(revision obj.Revision, file obj.File, database db.Database) error {
+func ApplyUpdate(revision obj.Revision, file obj.File, database db.Interface) error {
 	var err error
 	var changesToApply []obj.Change
-	prevChanges := database.GetChangesSinceRevision(revision.ID, revision.RevisionNumber)
+	prevChanges, err := database.GetChangesSinceRevision(revision.ID, revision.RevisionNumber)
+	if err != nil {
+		return err
+	}
+
 	fileContent := file.Content
 	for _, change := range revision.Changes {
 		if !change.IsValid() {
@@ -37,8 +41,17 @@ func ApplyUpdate(revision obj.Revision, file obj.File, database db.Database) err
 		}
 		changesToApply = append(changesToApply, transformedChange)
 	}
-	database.InsertChanges(revision.ID, changesToApply)
-	database.UpdateFileContent(revision.ID, fileContent)
+
+	err = database.InsertChanges(revision.ID, changesToApply)
+	if err != nil {
+		return err
+	}
+
+	err = database.UpdateFileContent(revision.ID, fileContent)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 

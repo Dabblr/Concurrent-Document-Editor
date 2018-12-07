@@ -10,7 +10,7 @@ import (
 func TestCreateEmptyFileReturnsIncrementedCounter(t *testing.T) {
 	var m MockDB
 	expID := m.FileCounter + 1
-	id, _ := m.CreateEmptyFile("fileName", "userName")
+	id, _, _ := m.CreateEmptyFile("fileName", "userName")
 
 	if id != expID {
 		t.Errorf("Expected id %d from CreateEmptyFile but got %d.", expID, id)
@@ -20,10 +20,20 @@ func TestCreateEmptyFileReturnsIncrementedCounter(t *testing.T) {
 // Tests that CreateEmptyFile returns a revision number = 1.
 func TestCreateEmptyFileReturnsRevisionNumberEqualOne(t *testing.T) {
 	var m MockDB
-	_, revisionNumber := m.CreateEmptyFile("fileName", "userName")
+	_, revisionNumber, _ := m.CreateEmptyFile("fileName", "userName")
 
 	if revisionNumber != 1 {
 		t.Errorf("Expected revisionNumber 1 from CreateEmptyFile but got %d.", revisionNumber)
+	}
+}
+
+// Tests that CreateEmptyFile returns an error when there is no more storage space left for files.
+func TestCreateEmptyFileReturnsErrorWhenOutOfStorage(t *testing.T) {
+	m := MockDB{maxFiles, "", []obj.Change{}}
+	_, _, err := m.CreateEmptyFile("fileName", "userName")
+
+	if err == nil {
+		t.Errorf("Expected CreateEmptyFile with max number of files already created to return an error, but got nil.")
 	}
 }
 
@@ -80,7 +90,7 @@ func TestGetChangesSinceRevisionReturnsChangeArray(t *testing.T) {
 	expChanges := []obj.Change{obj.NewChange("insert", 0, "a"), obj.NewChange("delete", 0, "a")}
 	m := MockDB{fileID, "", expChanges}
 
-	changes := m.GetChangesSinceRevision(fileID, revisionNumber)
+	changes, _ := m.GetChangesSinceRevision(fileID, revisionNumber)
 	for i, change := range changes {
 		if change.Equals(expChanges[i]) == false {
 			t.Errorf("Expected %v from GetChangesSinceRevision, but got %v.", expChanges, changes)
@@ -95,9 +105,21 @@ func TestGetChangesSinceRevisionReturnsEmptyArrayIfNoChanges(t *testing.T) {
 	revisionNumber := 1
 	m := MockDB{fileID, "", []obj.Change{}}
 
-	changes := m.GetChangesSinceRevision(fileID, revisionNumber)
+	changes, _ := m.GetChangesSinceRevision(fileID, revisionNumber)
 	if len(changes) != 0 {
 		t.Errorf("Expected an empty Change array from GetChangesSinceRevision, but got %v.", changes)
+	}
+}
+
+// Tests that GetChangesSinceRevision returns an error when the file ID is invalid.
+func TestGetChangesSinceRevisionReturnsErrorWhenInvalidFileId(t *testing.T) {
+	fileID := 1
+	revisionNumber := 1
+	m := MockDB{fileID, "", []obj.Change{}}
+
+	_, err := m.GetChangesSinceRevision(fileID+1, revisionNumber)
+	if err == nil {
+		t.Errorf("Expected GetChangesSinceRevision with an invalid File ID to return an error, but got nil.")
 	}
 }
 
@@ -137,6 +159,20 @@ func TestInsertChangesDoesNotUpdateWhenChangesEmpty(t *testing.T) {
 	}
 }
 
+// Tests that InsertChanges returns an error when the file ID is invalid.
+func TestInsertChangesReturnsErrorWhenInvalidFileId(t *testing.T) {
+	fileID := 1
+	fileContent := ""
+	prevChanges := []obj.Change{obj.NewChange("insert", 0, "a")}
+	newChanges := []obj.Change{}
+	m := MockDB{fileID, fileContent, prevChanges}
+
+	err := m.InsertChanges(fileID+1, newChanges)
+	if err == nil {
+		t.Errorf("Expected InsertChanges to return an error with an invalid File ID, but got nil.")
+	}
+}
+
 // Tests that UpdateFileContent overwrites the FileContent field with the new value.
 func TestUpdateFileContentModifiesFileContent(t *testing.T) {
 	fileID := 1
@@ -147,5 +183,18 @@ func TestUpdateFileContentModifiesFileContent(t *testing.T) {
 	m.UpdateFileContent(fileID, newContent)
 	if m.FileContent != newContent {
 		t.Errorf("Expected UpdateFileContent to update FileContent to %v, but it got updated to %v.", newContent, m.FileContent)
+	}
+}
+
+// Tests that UpdateFileContent returns an error when the file ID is invalid.
+func TestUpdateFileContentReturnsErrorWhenInvalidFileId(t *testing.T) {
+	fileID := 1
+	fileContent := "oldContent"
+	newContent := "newContent"
+	m := MockDB{fileID, fileContent, []obj.Change{}}
+
+	err := m.UpdateFileContent(fileID+1, newContent)
+	if err == nil {
+		t.Errorf("Expected UpdateFileContent to return an error with an invalid file ID, but got nil.")
 	}
 }
