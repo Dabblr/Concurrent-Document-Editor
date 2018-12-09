@@ -117,7 +117,6 @@ func main() {
 	var dev *bool
 	dev = flag.Bool("dev", false, "set this flag to use the mock database")
 	flag.Parse()
-	fmt.Printf("flag: %v\n", *dev)
 	if *dev {
 		fmt.Println("Starting mock database")
 		database = &db.MockDB{}
