@@ -12,7 +12,7 @@ import (
 )
 
 // Change the type of this based on environment.
-var database db.Database
+var database db.MockDB
 
 // CreateFile creates a new empty file and returns the associated file object.
 func CreateFile(w http.ResponseWriter, r *http.Request) {
@@ -32,6 +32,7 @@ func CreateFile(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("POST request to /files failed, unable to create new file:", err)
 		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 
 	log.Println("File created.", file)
@@ -108,6 +109,7 @@ func PostUpdates(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	//database = db.CreateEmptyDb("../updates.db") Only run this if using real db
 	router := mux.NewRouter()
 	router.HandleFunc("/files", CreateFile).Methods("POST")
 	router.HandleFunc("/files/{id}", GetFile).Methods("GET")

@@ -15,7 +15,7 @@ type Database struct {
 	Path string
 }
 
-const createDBFile = "createDb.sql"
+const createDBFile = "../database/createDb.sql"
 
 // CreateEmptyDb creates an empty database and returns the struct
 func CreateEmptyDb(name string) Database {
