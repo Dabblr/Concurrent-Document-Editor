@@ -84,7 +84,12 @@ func (db *Database) CreateEmptyFile(fileName string, userID string) (int, int, e
 
 // CreateUser creates a user with the given username
 // returns the new user's ID
+// TODO @nikita: get rid of the int being returned here?
 func (db *Database) CreateUser(username string) (int, error) {
+	if username == "" {
+		return -1, errors.New("empty username")
+	}
+
 	conn, err := sqlite3.Open(db.Path)
 	defer conn.Close()
 	if err != nil {

@@ -6,6 +6,24 @@ import (
 	obj "github.com/Dabblr/Concurrent-Document-Editor/objects"
 )
 
+// Tests that CreateUser returns an error when the username passed to it is an empty string.
+func TestMockCreateUserReturnsErrorWhenEmptyUsername(t *testing.T) {
+	var m MockDB
+	_, err := m.CreateUser("")
+	if err == nil {
+		t.Errorf("Expected CreateUser to return an error when the username is empty but got nil.")
+	}
+}
+
+// Tests that Create User does not return an error when the username passed is a non-empty string.
+func TestMockCreateUserReturnsNilWhenNonEmptyUsername(t *testing.T) {
+	var m MockDB
+	_, err := m.CreateUser("user1")
+	if err != nil {
+		t.Errorf("Expected CreateUser to return nil but got the following error: %v.", err)
+	}
+}
+
 // Tests that CreateEmptyFile returns the value of FileCounter incremented by 1.
 func TestMockCreateEmptyFileReturnsIncrementedCounter(t *testing.T) {
 	var m MockDB

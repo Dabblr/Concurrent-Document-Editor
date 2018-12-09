@@ -5,7 +5,7 @@ import "fmt"
 // File contains information about each file.
 type File struct {
 	// The username of the user updating the file.
-	User string `json:"user,omitempty"`
+	User string `json:"user"`
 	// The ID of the file (generated on server).
 	ID int `json:"id"`
 	// The name of the file.
