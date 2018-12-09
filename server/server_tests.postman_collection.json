@@ -7,6 +7,244 @@
 	},
 	"item": [
 		{
+			"name": "create_user_tests",
+			"item": [
+				{
+					"name": "TestUserCreationNoBody",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "6835e72b-7a61-4a09-80d7-1ef8d420a0db",
+								"exec": [
+									"pm.test(\"Response status is 400 Bad Request\", function() {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Response has no body\", function() {",
+									"   pm.response.to.not.be.withBody; ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users"
+							]
+						},
+						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `/users` endpoint has no body."
+					},
+					"response": []
+				},
+				{
+					"name": "TestUserCreationInvalidJSON",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9f08d1db-2519-459f-9b8b-c5f0d0aacf55",
+								"exec": [
+									"pm.test(\"Response status is 400 Bad Request\", function() {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Response has no body\", function() {",
+									"   pm.response.to.not.be.withBody; ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\t\n\t\"user\":user1\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users"
+							]
+						},
+						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `/users` endpoint contains invalid/poorly formed JSON."
+					},
+					"response": []
+				},
+				{
+					"name": "TestUserCreationMissingUser",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7c63ab5e-2760-4dce-8d64-d87cab7ddfc7",
+								"exec": [
+									"pm.test(\"Response status is 400 Bad Request\", function() {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Response has no body\", function() {",
+									"   pm.response.to.not.be.withBody; ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\t\n\t\"name\": \"file1.txt\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users"
+							]
+						},
+						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `/users` endpoint is missing a `user` field in the JSON body."
+					},
+					"response": []
+				},
+				{
+					"name": "TestUserCreationEmptyUsername",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "fdbc6014-5f31-4892-8490-3542890602fa",
+								"exec": [
+									"pm.test(\"Response status is 400 Bad Request\", function() {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Response has no body\", function() {",
+									"   pm.response.to.not.be.withBody; ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"user\":\"\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users"
+							]
+						},
+						"description": "Verifies that the response status code is 400 Bad Request when a POST request to the `/users` endpoint has an empty string `user` field in the JSON body."
+					},
+					"response": []
+				},
+				{
+					"name": "TestUserCreationSuccess",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "60de0d19-d055-45a6-97ba-6b946152e5e3",
+								"exec": [
+									"// Tests that the response status is 201 Created.",
+									"pm.test(\"Response status is 201 Created\", function() {",
+									"   pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response has no body\", function() {",
+									"   pm.response.to.not.be.withBody; ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\t\n\t\"user\":\"user1\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users"
+							]
+						},
+						"description": "Verifies that the response has a 201 status code after a successful POST request to the `/users` endpoint."
+					},
+					"response": []
+				}
+			],
+			"description": "Contains tests for creating a user at the `/users` endpoint."
+		},
+		{
 			"name": "create_file_tests",
 			"item": [
 				{
@@ -1069,19 +1307,19 @@
 	],
 	"variable": [
 		{
-			"id": "7a626478-f1cb-46f7-9d0b-af6bbe7d3d08",
+			"id": "a35316c5-d94e-4491-93ef-915f9938f3ce",
 			"value": "",
 			"type": "string",
 			"disabled": true
 		},
 		{
-			"id": "62f2e5b1-755e-4bd2-8b73-1f401be35fc1",
+			"id": "6d3217f0-286c-48b8-bd2f-8552ce22ac37",
 			"value": "",
 			"type": "string",
 			"disabled": true
 		},
 		{
-			"id": "08d82fa7-072f-46ca-8afd-bd5ae57ad17b",
+			"id": "ddcce65e-0813-4c40-a340-27e13014a869",
 			"value": "",
 			"type": "string",
 			"disabled": true

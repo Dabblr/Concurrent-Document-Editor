@@ -6,6 +6,9 @@ import (
 
 // Interface contains all the functions that interact with the database.
 type Interface interface {
+	// Creates a new user with the given username and adds it to the user database.
+	CreateUser(userName string) (int, error)
+
 	// Creates a new file, stores it in the database, and returns the id for it as well as the latest revision.
 	CreateEmptyFile(fileName string, userID string) (int, int, error)
 

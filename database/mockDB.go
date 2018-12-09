@@ -20,6 +20,15 @@ type MockDB struct {
 	Changes []obj.Change
 }
 
+// CreateUser returns an error if the given username string is empty, otherwise returns nil.
+// TODO: Once Nikita removes the int from his method, remove it here too.
+func (m *MockDB) CreateUser(username string) (int, error) {
+	if username == "" {
+		return -1, errors.New("cannot create a user with an empty username")
+	}
+	return 1, nil
+}
+
 // CreateEmptyFile increments the FileCounter and returns it to mock creating a file.
 // Returns an error if we have already created the maximum number of files (arbitrarily imposed limit to test error response)
 func (m *MockDB) CreateEmptyFile(fileName string, userName string) (int, int, error) {

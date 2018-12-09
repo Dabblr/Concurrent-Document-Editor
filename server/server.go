@@ -19,6 +19,32 @@ var database db.Interface
 // DBPATH is the path to the database file
 const DBPATH = "../updates.db"
 
+// CreateUser creates a new user and adds it to the user database.
+func CreateUser(w http.ResponseWriter, r *http.Request) {
+	var user obj.File
+	err := json.NewDecoder(r.Body).Decode(&user)
+	if err != nil || user.User == "" {
+		// Request was missing required fields or poorly formed.
+		log.Println("POST request to /users was missing required field(s) or poorly formed.")
+		if err != nil {
+			log.Println(err)
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	_, err = database.CreateUser(user.User)
+	if err != nil {
+		// Unable to create a user with the given username.
+		log.Println("POST request to /users contained an invalid username, error generated:", err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	log.Printf("User with username %s created.\n", user.User)
+	w.WriteHeader(http.StatusCreated)
+}
+
 // CreateFile creates a new empty file and returns the associated file object.
 func CreateFile(w http.ResponseWriter, r *http.Request) {
 	var file obj.File
@@ -126,6 +152,7 @@ func main() {
 		database = &dbtemp
 	}
 	router := mux.NewRouter()
+	router.HandleFunc("/users", CreateUser).Methods("POST")
 	router.HandleFunc("/files", CreateFile).Methods("POST")
 	router.HandleFunc("/files/{id}", GetFile).Methods("GET")
 	router.HandleFunc("/files/{id}", PostUpdates).Methods("POST")
