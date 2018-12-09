@@ -12,7 +12,7 @@ import (
 )
 
 // Change the type of this based on environment.
-var database db.MockDB
+var database db.Database
 
 // CreateFile creates a new empty file and returns the associated file object.
 func CreateFile(w http.ResponseWriter, r *http.Request) {
