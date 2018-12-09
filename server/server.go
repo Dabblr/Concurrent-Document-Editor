@@ -2,6 +2,8 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -12,7 +14,10 @@ import (
 )
 
 // Change the type of this based on environment.
-var database db.MockDB
+var database db.Interface
+
+// DBPATH is the path to the database file
+const DBPATH = "../updates.db"
 
 // CreateFile creates a new empty file and returns the associated file object.
 func CreateFile(w http.ResponseWriter, r *http.Request) {
@@ -97,7 +102,7 @@ func PostUpdates(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Printf("\"%s\" made updates to File ID %d\n", revision.User, revision.ID)
-	err = ApplyUpdate(revision, file, &database)
+	err = ApplyUpdate(revision, file, database)
 	if err != nil {
 		// Updates were not applied.
 		log.Println("Updates were not applied:", err)
@@ -109,7 +114,18 @@ func PostUpdates(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	//database = db.CreateEmptyDb("../updates.db") Only run this if using real db
+	var dev *bool
+	dev = flag.Bool("dev", false, "set this flag to use the mock database")
+	flag.Parse()
+	fmt.Printf("flag: %v\n", *dev)
+	if *dev {
+		fmt.Println("Starting mock database")
+		database = &db.MockDB{}
+	} else {
+		fmt.Println("Starting real database")
+		dbtemp := db.CreateEmptyDb(DBPATH)
+		database = &dbtemp
+	}
 	router := mux.NewRouter()
 	router.HandleFunc("/files", CreateFile).Methods("POST")
 	router.HandleFunc("/files/{id}", GetFile).Methods("GET")
