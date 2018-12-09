@@ -28,7 +28,13 @@ func CreateFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	file.ID, file.RevisionNumber = database.CreateEmptyFile(file.Name, file.User)
+	file.ID, file.RevisionNumber, err = database.CreateEmptyFile(file.Name, file.User)
+	if err != nil {
+		log.Println("POST request to /files failed, unable to create new file:", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
 	log.Println("File created.", file)
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
@@ -103,6 +109,7 @@ func PostUpdates(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	//database = db.CreateEmptyDb("../updates.db") Only run this if using real db
 	router := mux.NewRouter()
 	router.HandleFunc("/files", CreateFile).Methods("POST")
 	router.HandleFunc("/files/{id}", GetFile).Methods("GET")
