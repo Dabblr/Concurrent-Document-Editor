@@ -25,7 +25,7 @@ func TestCreateUserReturnsIncrementedCounter(t *testing.T) {
 
 func TestCreateEmptyFileReturnsIncrementedCounter(t *testing.T) {
 	db := Database{Path: path}
-	fileID, _, _ := db.CreateEmptyFile("TESTFILE.TEST", ID)
+	fileID, _, _ := db.CreateEmptyFile("TESTFILE.TEST", "TESTUSER")
 
 	if fileID != ID {
 		t.Errorf("Expected fileID to be 1, instead it was %d", fileID)
@@ -34,7 +34,7 @@ func TestCreateEmptyFileReturnsIncrementedCounter(t *testing.T) {
 
 func TestCreateEmptyFileReturnsRevisionOne(t *testing.T) {
 	db := Database{Path: path}
-	_, revID, _ := db.CreateEmptyFile("TESTFILE.TEST", ID)
+	_, revID, _ := db.CreateEmptyFile("TESTFILE.TEST", "TESTUSER")
 
 	if revID != ID {
 		t.Errorf("Expected revision to be 1, instead it was %d", revID)
@@ -43,7 +43,7 @@ func TestCreateEmptyFileReturnsRevisionOne(t *testing.T) {
 
 func TestCreateEmptyFileReturnsErrorWhenBadUser(t *testing.T) {
 	db := Database{Path: path}
-	_, _, err := db.CreateEmptyFile("TESTFILE.TEST", invalidID)
+	_, _, err := db.CreateEmptyFile("TESTFILE.TEST", "BADUSER")
 
 	if err == nil {
 		t.Errorf("Expected CreateEmptyFile to produce an error, but it was nil.")

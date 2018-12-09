@@ -39,7 +39,7 @@ func CreateEmptyDb(name string) Database {
 
 // CreateEmptyFile creates a new file with no contents, gives ownership to userName
 // Returns the new file's ID, and the file's latest revision (0) (both -1 in the event  of an error)
-func (db *Database) CreateEmptyFile(fileName string, userID int) (int, int, error) {
+func (db *Database) CreateEmptyFile(fileName string, userID string) (int, int, error) {
 	conn, err := sqlite3.Open(db.Path)
 	defer conn.Close()
 	if err != nil {
@@ -49,13 +49,19 @@ func (db *Database) CreateEmptyFile(fileName string, userID int) (int, int, erro
 	if err != nil {
 		return -1, -1, err
 	}
+	user, err := conn.Query("SELECT id FROM users WHERE username = ?", userID)
+	if err != nil {
+		return -1, -1, err
+	}
+	var userNumber int
+	user.Scan(&userNumber)
 
 	statement, err := conn.Prepare("INSERT INTO files (filename, owner) VALUES(?, ?)")
 	defer statement.Close()
 	if err != nil {
 		return -1, -1, err
 	}
-	statement.Exec(fileName, userID)
+	statement.Exec(fileName, userNumber)
 
 	// Get file ID
 	rows, err := conn.Query("SELECT LAST_INSERT_ROWID();")
@@ -69,7 +75,7 @@ func (db *Database) CreateEmptyFile(fileName string, userID int) (int, int, erro
 	rows.Scan(&fileID)
 
 	if fileID == 0 {
-		err = fmt.Errorf("invalid user ID %v", userID)
+		err = fmt.Errorf("invalid user ID %v", userNumber)
 		return -1, -1, err
 	}
 
