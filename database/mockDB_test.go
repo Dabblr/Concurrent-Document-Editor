@@ -7,7 +7,7 @@ import (
 )
 
 // Tests that CreateEmptyFile returns the value of FileCounter incremented by 1.
-func TestCreateEmptyFileReturnsIncrementedCounter(t *testing.T) {
+func TestMockCreateEmptyFileReturnsIncrementedCounter(t *testing.T) {
 	var m MockDB
 	expID := m.FileCounter + 1
 	id, _, _ := m.CreateEmptyFile("fileName", "userName")
@@ -18,7 +18,7 @@ func TestCreateEmptyFileReturnsIncrementedCounter(t *testing.T) {
 }
 
 // Tests that CreateEmptyFile returns a revision number = 1.
-func TestCreateEmptyFileReturnsRevisionNumberEqualOne(t *testing.T) {
+func TestMockCreateEmptyFileReturnsRevisionNumberEqualOne(t *testing.T) {
 	var m MockDB
 	_, revisionNumber, _ := m.CreateEmptyFile("fileName", "userName")
 
@@ -28,7 +28,7 @@ func TestCreateEmptyFileReturnsRevisionNumberEqualOne(t *testing.T) {
 }
 
 // Tests that CreateEmptyFile returns an error when there is no more storage space left for files.
-func TestCreateEmptyFileReturnsErrorWhenOutOfStorage(t *testing.T) {
+func TestMockCreateEmptyFileReturnsErrorWhenOutOfStorage(t *testing.T) {
 	m := MockDB{maxFiles, "", []obj.Change{}}
 	_, _, err := m.CreateEmptyFile("fileName", "userName")
 
@@ -38,7 +38,7 @@ func TestCreateEmptyFileReturnsErrorWhenOutOfStorage(t *testing.T) {
 }
 
 // Tests that GetFileContent returns a File object with the correct ID and FileContent when the input ID is valid.
-func TestGetFileContentReturnsFileWhenValidId(t *testing.T) {
+func TestMockGetFileContentReturnsFileWhenValidId(t *testing.T) {
 	fileContent := "fileContent"
 	fileID := 5
 	m := MockDB{fileID, fileContent, []obj.Change{}}
@@ -51,7 +51,7 @@ func TestGetFileContentReturnsFileWhenValidId(t *testing.T) {
 }
 
 // Tests that GetFileContent returns an error when the ID is negative.
-func TestGetFileContentReturnsErrorWhenNegativeId(t *testing.T) {
+func TestMockGetFileContentReturnsErrorWhenNegativeId(t *testing.T) {
 	fileID := -1
 	m := MockDB{5, "", []obj.Change{}}
 
@@ -62,7 +62,7 @@ func TestGetFileContentReturnsErrorWhenNegativeId(t *testing.T) {
 }
 
 // Tests that GetFileContent returns an error when the ID is zero.
-func TestGetFileContentReturnsErrorWhenZeroId(t *testing.T) {
+func TestMockGetFileContentReturnsErrorWhenZeroId(t *testing.T) {
 	fileID := 0
 	m := MockDB{5, "", []obj.Change{}}
 
@@ -73,7 +73,7 @@ func TestGetFileContentReturnsErrorWhenZeroId(t *testing.T) {
 }
 
 // Tests that GetFileContent returns an error when the file ID does not exist on the server.
-func TestGetFileContentReturnsErrorWhenIdNotFound(t *testing.T) {
+func TestMockGetFileContentReturnsErrorWhenIdNotFound(t *testing.T) {
 	fileID := 5
 	m := MockDB{fileID - 1, "", []obj.Change{}}
 
@@ -84,7 +84,7 @@ func TestGetFileContentReturnsErrorWhenIdNotFound(t *testing.T) {
 }
 
 // Tests that GetChangesSinceRevision returns the Change array Changes.
-func TestGetChangesSinceRevisionReturnsChangeArray(t *testing.T) {
+func TestMockGetChangesSinceRevisionReturnsChangeArray(t *testing.T) {
 	fileID := 1
 	revisionNumber := 1
 	expChanges := []obj.Change{obj.NewChange("insert", 0, "a"), obj.NewChange("delete", 0, "a")}
@@ -100,7 +100,7 @@ func TestGetChangesSinceRevisionReturnsChangeArray(t *testing.T) {
 }
 
 // Tests that GetChangesSinceRevision returns an empty Change array when Changes is empty.
-func TestGetChangesSinceRevisionReturnsEmptyArrayIfNoChanges(t *testing.T) {
+func TestMockGetChangesSinceRevisionReturnsEmptyArrayIfNoChanges(t *testing.T) {
 	fileID := 1
 	revisionNumber := 1
 	m := MockDB{fileID, "", []obj.Change{}}
@@ -112,7 +112,7 @@ func TestGetChangesSinceRevisionReturnsEmptyArrayIfNoChanges(t *testing.T) {
 }
 
 // Tests that GetChangesSinceRevision returns an error when the file ID is invalid.
-func TestGetChangesSinceRevisionReturnsErrorWhenInvalidFileId(t *testing.T) {
+func TestMockGetChangesSinceRevisionReturnsErrorWhenInvalidFileId(t *testing.T) {
 	fileID := 1
 	revisionNumber := 1
 	m := MockDB{fileID, "", []obj.Change{}}
@@ -124,7 +124,7 @@ func TestGetChangesSinceRevisionReturnsErrorWhenInvalidFileId(t *testing.T) {
 }
 
 // Tests that InsertChanges updates the Changes field to include the array of changes.
-func TestInsertChangesUpdatesChanges(t *testing.T) {
+func TestMockInsertChangesUpdatesChanges(t *testing.T) {
 	fileID := 1
 	fileContent := ""
 	prevChanges := []obj.Change{obj.NewChange("insert", 0, "a")}
@@ -142,7 +142,7 @@ func TestInsertChangesUpdatesChanges(t *testing.T) {
 }
 
 // Tests that InsertChanges does not update the Changes field when the array of changes is empty.
-func TestInsertChangesDoesNotUpdateWhenChangesEmpty(t *testing.T) {
+func TestMockInsertChangesDoesNotUpdateWhenChangesEmpty(t *testing.T) {
 	fileID := 1
 	fileContent := ""
 	prevChanges := []obj.Change{obj.NewChange("insert", 0, "a")}
@@ -160,7 +160,7 @@ func TestInsertChangesDoesNotUpdateWhenChangesEmpty(t *testing.T) {
 }
 
 // Tests that InsertChanges returns an error when the file ID is invalid.
-func TestInsertChangesReturnsErrorWhenInvalidFileId(t *testing.T) {
+func TestMockInsertChangesReturnsErrorWhenInvalidFileId(t *testing.T) {
 	fileID := 1
 	fileContent := ""
 	prevChanges := []obj.Change{obj.NewChange("insert", 0, "a")}
@@ -174,7 +174,7 @@ func TestInsertChangesReturnsErrorWhenInvalidFileId(t *testing.T) {
 }
 
 // Tests that UpdateFileContent overwrites the FileContent field with the new value.
-func TestUpdateFileContentModifiesFileContent(t *testing.T) {
+func TestMockUpdateFileContentModifiesFileContent(t *testing.T) {
 	fileID := 1
 	fileContent := "oldContent"
 	newContent := "newContent"
@@ -187,7 +187,7 @@ func TestUpdateFileContentModifiesFileContent(t *testing.T) {
 }
 
 // Tests that UpdateFileContent returns an error when the file ID is invalid.
-func TestUpdateFileContentReturnsErrorWhenInvalidFileId(t *testing.T) {
+func TestMockUpdateFileContentReturnsErrorWhenInvalidFileId(t *testing.T) {
 	fileID := 1
 	fileContent := "oldContent"
 	newContent := "newContent"

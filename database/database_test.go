@@ -13,7 +13,7 @@ const ID = 1
 
 var expectedChanges = []obj.Change{obj.NewChange("insert", 0, "a"), obj.NewChange("insert", 1, "b")}
 
-func TestCreateUserReturnsIncrementedCounterReal(t *testing.T) {
+func TestCreateUserReturnsIncrementedCounter(t *testing.T) {
 	CreateEmptyDb(path)
 	db := Database{Path: path}
 	userID, _ := db.CreateUser("TESTUSER")
@@ -23,7 +23,7 @@ func TestCreateUserReturnsIncrementedCounterReal(t *testing.T) {
 	}
 }
 
-func TestCreateEmptyFileReturnsIncrementedCounterReal(t *testing.T) {
+func TestCreateEmptyFileReturnsIncrementedCounter(t *testing.T) {
 	db := Database{Path: path}
 	fileID, _, _ := db.CreateEmptyFile("TESTFILE.TEST", ID)
 
@@ -41,7 +41,7 @@ func TestCreateEmptyFileReturnsRevisionOne(t *testing.T) {
 	}
 }
 
-func TestCreateEmptyFileReturnsErrorWhenBadUserReal(t *testing.T) {
+func TestCreateEmptyFileReturnsErrorWhenBadUser(t *testing.T) {
 	db := Database{Path: path}
 	_, _, err := db.CreateEmptyFile("TESTFILE.TEST", invalidID)
 
@@ -50,7 +50,7 @@ func TestCreateEmptyFileReturnsErrorWhenBadUserReal(t *testing.T) {
 	}
 }
 
-func TestUpdateFileContentModifiesFileContentReal(t *testing.T) {
+func TestUpdateFileContentModifiesFileContent(t *testing.T) {
 	db := Database{Path: path}
 
 	err := db.UpdateFileContent(ID, "Updated file content")
@@ -60,7 +60,7 @@ func TestUpdateFileContentModifiesFileContentReal(t *testing.T) {
 	}
 }
 
-func TestGetFileContentReturnsMatchingContentReal(t *testing.T) {
+func TestGetFileContentReturnsMatchingContent(t *testing.T) {
 	db := Database{Path: path}
 	f, err := db.GetFileContent(ID)
 
@@ -72,7 +72,7 @@ func TestGetFileContentReturnsMatchingContentReal(t *testing.T) {
 	}
 }
 
-func TestGetFileContentReturnsErrorWithBadFileIDReal(t *testing.T) {
+func TestGetFileContentReturnsErrorWithBadFileID(t *testing.T) {
 	db := Database{Path: path}
 	_, err := db.GetFileContent(invalidID)
 
@@ -80,7 +80,7 @@ func TestGetFileContentReturnsErrorWithBadFileIDReal(t *testing.T) {
 		t.Error("Expected GetFileContent to produce an error, but it was nil.")
 	}
 }
-func TestInsertChangesDoesNotUpdateWhenChangesEmptyReal(t *testing.T) {
+func TestInsertChangesDoesNotUpdateWhenChangesEmpty(t *testing.T) {
 	db := Database{Path: path}
 	var emptyChanges []obj.Change
 
@@ -90,7 +90,7 @@ func TestInsertChangesDoesNotUpdateWhenChangesEmptyReal(t *testing.T) {
 		t.Errorf("InsertChanges threw an error on empty array %v", err)
 	}
 }
-func TestGetChangesSinceRevisionReturnsEmptyArrayIfNoChangesReal(t *testing.T) {
+func TestGetChangesSinceRevisionReturnsEmptyArrayIfNoChanges(t *testing.T) {
 	db := Database{Path: path}
 	changes, err := db.GetChangesSinceRevision(ID, 1)
 
@@ -108,7 +108,7 @@ func TestGetChangesSinceRevisionReturnsEmptyArrayIfNoChangesReal(t *testing.T) {
 	}
 }
 
-func TestInsertChangesUpdatesChangesReal(t *testing.T) {
+func TestInsertChangesUpdatesChanges(t *testing.T) {
 	db := Database{Path: path}
 
 	err := db.InsertChanges(ID, expectedChanges)
@@ -118,7 +118,7 @@ func TestInsertChangesUpdatesChangesReal(t *testing.T) {
 	}
 }
 
-func TestGetChangesSinceRevisionReturnsErrorWithBadFileIDReal(t *testing.T) {
+func TestGetChangesSinceRevisionReturnsErrorWithBadFileID(t *testing.T) {
 	db := Database{Path: path}
 	_, err := db.GetChangesSinceRevision(invalidID, 0)
 
@@ -127,7 +127,7 @@ func TestGetChangesSinceRevisionReturnsErrorWithBadFileIDReal(t *testing.T) {
 	}
 }
 
-func TestGetChangesSinceRevisionReturnsChangeArrayReal(t *testing.T) {
+func TestGetChangesSinceRevisionReturnsChangeArray(t *testing.T) {
 	db := Database{Path: path}
 	changes, err := db.GetChangesSinceRevision(ID, 0)
 
