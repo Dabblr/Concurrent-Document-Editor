@@ -169,6 +169,7 @@ func (db *Database) GetChangesSinceRevision(id int, revisionNumber int) ([]obj.C
 	var fileCheck int
 	f.Scan(&fileCheck)
 	if fileCheck == 0 {
+		f.Close()
 		return nil, errors.New("File not found")
 	}
 	f.Close()
