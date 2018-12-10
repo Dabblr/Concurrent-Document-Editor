@@ -151,6 +151,12 @@ func main() {
 		dbtemp := db.CreateEmptyDb(DBPATH)
 		database = &dbtemp
 	}
+	// dbtemp := db.CreateEmptyDb(DBPATH)
+	// dbtemp.CreateUser("Nikita")
+	// dbtemp.CreateEmptyFile("file27.txt", "Nikita")
+	// err := dbtemp.UpdateFileContent(1, "UPDATED!!!")
+	// fmt.Printf("'Error' %v\n", err)
+
 	router := mux.NewRouter()
 	router.HandleFunc("/users", CreateUser).Methods("POST")
 	router.HandleFunc("/files", CreateFile).Methods("POST")

@@ -55,24 +55,23 @@ func (db *Database) CreateEmptyFile(fileName string, userID string) (int, int, e
 	}
 	var userNumber int
 	user.Scan(&userNumber)
+	user.Close()
 
 	statement, err := conn.Prepare("INSERT INTO files (filename, owner) VALUES(?, ?)")
-	defer statement.Close()
 	if err != nil {
 		return -1, -1, err
 	}
 	statement.Exec(fileName, userNumber)
+	statement.Close()
 
 	// Get file ID
 	rows, err := conn.Query("SELECT LAST_INSERT_ROWID();")
-	if rows != nil {
-		defer rows.Close()
-	}
 	if err != nil {
 		return -1, -1, err
 	}
 	var fileID int
 	rows.Scan(&fileID)
+	rows.Close()
 
 	if fileID == 0 {
 		err = fmt.Errorf("invalid user ID %v", userNumber)
@@ -172,6 +171,7 @@ func (db *Database) GetChangesSinceRevision(id int, revisionNumber int) ([]obj.C
 	if fileCheck == 0 {
 		return nil, errors.New("File not found")
 	}
+	f.Close()
 
 	var next error
 	var changes []obj.Change
@@ -236,7 +236,7 @@ func (db *Database) InsertChanges(id int, changes []obj.Change) error {
 
 	conn.Exec(
 		`INSERT INTO revisions (file, number)
-		VALUES (?, ?)`, id, revNum)
+			VALUES (?, ?)`, id, revNum)
 
 	statement, err := conn.Prepare(
 		`INSERT INTO changes (file, rev_number, position, character)
