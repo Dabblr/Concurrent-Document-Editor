@@ -32,7 +32,10 @@ func CreateEmptyDb(name string) Database {
 	if err != nil {
 		panic(err)
 	}
-	conn.Exec(createString)
+	err = conn.Exec(createString)
+	if err != nil {
+		panic(err)
+	}
 
 	return Database{name}
 }
@@ -61,7 +64,10 @@ func (db *Database) CreateEmptyFile(fileName string, userID string) (int, int, e
 	if err != nil {
 		return -1, -1, err
 	}
-	statement.Exec(fileName, userNumber)
+	err = statement.Exec(fileName, userNumber)
+	if err != nil {
+		return -1, -1, err
+	}
 	statement.Close()
 
 	// Get file ID
@@ -94,14 +100,20 @@ func (db *Database) CreateUser(username string) (int, error) {
 	if err != nil {
 		return -1, err
 	}
-	conn.Exec("PRAGMA foreign_keys = ON")
+	err = conn.Exec("PRAGMA foreign_keys = ON")
+	if err != nil {
+		return -1, err
+	}
 
 	statement, err := conn.Prepare("INSERT INTO users (username) VALUES(?)")
 	if err != nil {
 		return -1, err
 	}
 
-	statement.Exec(username)
+	err = statement.Exec(username)
+	if err != nil {
+		return -1, err
+	}
 
 	// Get user ID
 	rows, err := conn.Query("SELECT LAST_INSERT_ROWID();")
@@ -132,21 +144,28 @@ func (db *Database) GetFileContent(id int) (obj.File, error) {
 		SELECT filename, data, owner
 		FROM files
 		WHERE id=?`, id)
-	if rows != nil {
-		defer rows.Close()
-	}
 	if err != nil {
 		return f, err
 	}
 	var data string
 	var user string
 	var name string
+	var revision int
 	rows.Scan(&name, &data, &user)
+	rows.Close()
+
+	rows, err = conn.Query(
+		`SELECT max(number)
+		FROM revisions
+		WHERE file = ?`, id)
+	rows.Scan(&revision)
+	rows.Close()
 
 	f.Content = data
 	f.Name = name
 	f.User = user
 	f.ID = id
+	f.RevisionNumber = revision
 
 	return f, nil
 }
@@ -206,7 +225,6 @@ func (db *Database) GetChangesSinceRevision(id int, revisionNumber int) ([]obj.C
 		} else {
 			c = obj.NewChange("insert", pos, char)
 		}
-		fmt.Printf("c: %v\n", c)
 		changes = append(changes, c)
 		next = revs.Next()
 	}
@@ -216,6 +234,9 @@ func (db *Database) GetChangesSinceRevision(id int, revisionNumber int) ([]obj.C
 
 // InsertChanges inserts an array of changes made to the given file in the database.
 func (db *Database) InsertChanges(id int, changes []obj.Change) error {
+	if len(changes) == 0 {
+		return nil
+	}
 	conn, err := sqlite3.Open(db.Path)
 	defer conn.Close()
 	if err != nil {
@@ -235,9 +256,12 @@ func (db *Database) InsertChanges(id int, changes []obj.Change) error {
 	row.Scan(&revNum)
 	revNum++
 
-	conn.Exec(
+	err = conn.Exec(
 		`INSERT INTO revisions (file, number)
 			VALUES (?, ?)`, id, revNum)
+	if err != nil {
+		return err
+	}
 
 	statement, err := conn.Prepare(
 		`INSERT INTO changes (file, rev_number, position, character)
@@ -247,7 +271,14 @@ func (db *Database) InsertChanges(id int, changes []obj.Change) error {
 	}
 
 	for _, c := range changes {
-		statement.Exec(id, revNum, c.Position, c.Value)
+		if c.Type == "delete" {
+			c.Value = ""
+		}
+		err = statement.Exec(id, revNum, c.Position, c.Value)
+		fmt.Printf("DEBUG: id: %v, revNum: %v, position: %v, value: %v\n", id, revNum, c.Position, c.Value)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -265,7 +296,10 @@ func (db *Database) UpdateFileContent(id int, fileContent string) error {
 	if err != nil {
 		return err
 	}
-	statement.Exec(fileContent, id)
+	err = statement.Exec(fileContent, id)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
