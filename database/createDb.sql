@@ -26,5 +26,5 @@ CREATE TABLE changes (
     character CHARACTER,
     FOREIGN KEY(file) references revisions(file),
     FOREIGN KEY(rev_number) references revisions(number),
-    PRIMARY KEY(file, rev_number, position)
+    PRIMARY KEY(file, rev_number, position, character)
 );
