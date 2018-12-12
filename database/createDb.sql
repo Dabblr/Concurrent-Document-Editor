@@ -13,10 +13,10 @@ CREATE TABLE files (
 
 CREATE TABLE revisions (
     file integer,
-    number integer,
+    rev_number integer,
     timestamp datetime default CURRENT_TIMESTAMP,
     FOREIGN KEY(file) references files(id),
-    PRIMARY KEY(file, number)    
+    PRIMARY KEY(file, rev_number)    
 );
 
 CREATE TABLE changes (
@@ -25,6 +25,6 @@ CREATE TABLE changes (
     position number,
     character CHARACTER,
     FOREIGN KEY(file) references revisions(file),
-    FOREIGN KEY(rev_number) references revisions(number),
+    FOREIGN KEY(rev_number) references revisions(rev_number),
     PRIMARY KEY(file, rev_number, position, character)
 );
