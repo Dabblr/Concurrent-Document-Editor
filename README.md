@@ -55,17 +55,18 @@ A collection of API tests -- `server_tests.postman_collection.json` -- is includ
   * Create a user, which is required in order to create a file
 * **POST** `/files`
   * Create a file with the given name as its name and given user as its owner
-* **GET** `/files/{id}`
-  * Get the specified file
-* **POST** `/files/{id}`
+* **GET** `/files/x`
+  * Get the specified file, where `x` is its integer ID
+* **POST** `/files/x`
+  * Where `x` is the integer ID for the relevant file
   * Update the specified file with the given changes, which are defined with respect to a specific revision
   * This is where divergence is resolved!
 
-Here is an example of a valid body for updating the contents of file through a **POST** request to `/files/{id}`:
+Here is an example of a valid body for updating the contents of file through a **POST** request to `/files/x`:
 ```
 {
 	"user":"user1",
-	"id":{{id}},
+	"id": 101,
 	"revision_number":1,
 	"name": "file1.txt",
 	"changes":[
