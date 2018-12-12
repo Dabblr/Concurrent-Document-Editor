@@ -14,7 +14,7 @@ This repo contains a self-contained prototype of a server-client shared document
 * [Postman](https://www.getpostman.com/apps) (optionally, for testing)
 
 ### Building & Running
-See info on [Go Workspaces](https://golang.org/doc/code.html#Workspaces) for info on the directory structure assumed by tools like `go get`.
+See [Go Workspaces](https://golang.org/doc/code.html#Workspaces) for info on the directory structure assumed by tools like `go get`.
 ```bash
 $ cd $GOPATH                              # $GOPATH env var has path to Go workspace
 $ pwd
@@ -32,7 +32,7 @@ $ ./server
 Starting real database
 ```
 
-With the server running locally (on port `8080` by default), you can send a `cURL` thus:
+With the server running locally (on port `8080` by default), you can send a `cURL` request thus:
 ```shell
 $ curl http://localhost:8080/files/1      # causes error message in server logs, since file with id=1 does not exist yet
 ```
