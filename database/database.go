@@ -85,7 +85,7 @@ func (db *Database) CreateEmptyFile(fileName string, userID string) (int, int, e
 	}
 
 	// Insert a dummy first change to signify file creation
-	err = conn.Exec("INSERT INTO revisions (file, number) VALUES(?, ?)", fileID, 1)
+	err = conn.Exec("INSERT INTO revisions (file, rev_number) VALUES(?, ?)", fileID, 1)
 	if err != nil {
 		return -1, -1, err
 	}
@@ -161,7 +161,7 @@ func (db *Database) GetFileContent(id int) (obj.File, error) {
 	rows.Close()
 
 	rows, err = conn.Query(
-		`SELECT max(number)
+		`SELECT max(rev_number)
 		FROM revisions
 		WHERE file = ?`, id)
 	rows.Scan(&revision)
@@ -203,10 +203,10 @@ func (db *Database) GetChangesSinceRevision(id int, revisionNumber int) ([]obj.C
 	var changes []obj.Change
 
 	revs, err := conn.Query(
-		`SELECT DISTINCT changes.file, rev_number, position, character
+		`SELECT DISTINCT changes.file, changes.rev_number, position, character
 		FROM revisions
 			JOIN changes
-		WHERE changes.file = ? AND number > ?`, id, revisionNumber)
+		WHERE changes.file = ? AND changes.rev_number > ?`, id, revisionNumber)
 	if revs != nil {
 		defer revs.Close()
 	} else {
@@ -250,7 +250,7 @@ func (db *Database) InsertChanges(id int, changes []obj.Change) error {
 	}
 
 	row, err := conn.Query(
-		`SELECT MAX(number)
+		`SELECT MAX(rev_number)
 		FROM revisions
 		WHERE file = ?`, id)
 	defer row.Close()
@@ -263,7 +263,7 @@ func (db *Database) InsertChanges(id int, changes []obj.Change) error {
 	revNum++
 
 	err = conn.Exec(
-		`INSERT INTO revisions (file, number)
+		`INSERT INTO revisions (file, rev_number)
 			VALUES (?, ?)`, id, revNum)
 	if err != nil {
 		return err
