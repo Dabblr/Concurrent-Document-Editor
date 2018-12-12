@@ -1,68 +1,37 @@
-# Concurrent Document Editor
-## Project Overview
-### Deliverables
-Our goal is to create a server-client system that:
+## Concurrent Document Editor
+### Project Overview
+This repo contains a self-contained prototype of a server-client shared document editor system that:
 * serves simple text documents over HTTP
 * allows a user to create a new text document with an HTTP request
 * accepts updates to a document over HTTP
 * stores and maintains revision history for a document
 * allows multiple editors to work on the same document concurrently
-* uses [Operational Transformation](https://en.wikipedia.org/wiki/Operational_transformation) to incorporate changes from multiple users into a single, newest version of the document
-    * resolving conflicts as necessary
+* uses [Operational Transformation](https://en.wikipedia.org/wiki/Operational_transformation) to resolve and incorporate conflicting revisions of a document
 
-### Acceptance Criteria
-At least initially, we can use a REST client (e.g. [Postman](https://www.getpostman.com/), [Insomnia](https://insomnia.rest/)) to test our sytem. Once we have the central pieces in place, we can create a JavaScript client with a GUI to perform all the edition operations.
+### Prerequisites
+* [SQLite](https://www.sqlite.org/download.html), which we use to track documents, changes, revisions, and users.
+* [Golang](https://golang.org/doc/install), which we use to implement all components of the system
 
-#### Single User Use Case
-- [ ] retrieve the latest version of a document with an `HTTP GET` request
-- [ ] send updates for a specific document with an `HTTP POST` request
-- [ ] confirm that the changes took effect by repeating the first step
-
-#### Multi-User Use Case
-The multi-user case can be "simulated" from a single machine:
-- [ ] retrieve the latest version of a document **R1** with an `HTTP GET` request
-- [ ] send an update **U1** with an `HTTP POST` request, identifying **R1** as the working copy
-    - the latest version of the document on the server should now be **R2**
-- [ ] send another update **U2** with an `HTTP POST` request, *also identifying **R1** as the working copy*
-- [ ] confirm that the server applied **U2** on top of **R2**, even though we sent the update while working on **R1**
-
-### Stretch Goals
-#### Server-Side
-* *Replication* - create and manage multiple instances of server
-* *Peer-to-Peer* - explore a decentralized peer-to-peer architecture and consensus algorithms
-
-#### Client-Side
-* *Editing GUI* - support a basic document editing environment in the browser
-* *Real-time Edition* - allow real-time edition of documents so that users see each other's editions as they happen
-  * this would likely require that we iterate on our architecture (e.g. use web sockets instead of simple HTTP)
-* *Undo* - Maintain undo stack on client-side.
-  * simpler case: client undoes **unsaved** changes only
-  * complex case: client may undo **saved** changes also
-* *Redo*
-  * Implies that stack frames aren't erased when popped.
-
-## Getting Started
-Get this repo on your machine: `git clone git@github.com:Dabblr/Concurrent-Document-Editor.git`
-### Git Cheat Sheet
-#### Create a New Branch
-Create a new branch **from `master`** whenever working on a new feature.
+### Building & Running
+See info on [Go Workspaces](https://golang.org/doc/code.html#Workspaces) for info on the directory structure assumed by tools like `go get`.
 ```
-$ git checkout master
-$ git checkout -b my_name/feature_name
+$ cd $GOPATH                              # $GOPATH env var has path to Go workspace
+$ pwd
+/Users/juan/code/go
+
+$ mkdir -p src/github.com/dabblr/         # create new folder, into which we'll clone the repo
+$ cd src/github.com/dabblr/
+$ git clone https://github.com/Dabblr/Concurrent-Document-Editor.git
+
+$ cd Concurrent-Document-Editor/server
+$ go get                                  # install packages
+$ go build                                # compile!
+
+$ ./server
+Starting real database
 ```
 
-#### Update Your Branch
-To incorporate new changes in `master` to your branch, merge master into your branch:
+With the server running locally (on port `8080` by default), you can send a `cURL` thus:
 ```
-# First, make sure your local copy of the master branch is up to date
-$ git checkout master
-$ git pull
-# Then, merge it into your branch
-$ git checkout my_name/feature_name
-$ git merge master
+$ curl http://localhost:8080/files/1      # causes error message in server logs, since file with id=1 does not exist yet
 ```
-
-#### Merge to `master`
-**NOTE**: First, make sure you've updated your branch with the latest master (see previous section).
-
-Open a PR to present your changes with a brief description as necessary. Approvals are always good, but no necessary: merge if no one has time to take a look. Use the big green button on the PR page.
