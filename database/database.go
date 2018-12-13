@@ -203,7 +203,7 @@ func (db *Database) GetChangesSinceRevision(id int, revisionNumber int) ([]obj.C
 	var changes []obj.Change
 
 	revs, err := conn.Query(
-		`SELECT DISTINCT changes.file, changes.rev_number, position, character
+		`SELECT DISTINCT chages.id, changes.file, changes.rev_number, position, character
 		FROM revisions
 			JOIN changes
 		WHERE changes.file = ? AND changes.rev_number > ?`, id, revisionNumber)
