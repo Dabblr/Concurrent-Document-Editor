@@ -16,6 +16,7 @@ func ApplyUpdate(revision obj.Revision, file obj.File, database db.Interface) er
 	var err error
 	var changesToApply []obj.Change
 	prevChanges, err := database.GetChangesSinceRevision(revision.ID, revision.RevisionNumber)
+	log.Println("Prev changes is:", prevChanges)
 	if err != nil {
 		return err
 	}
