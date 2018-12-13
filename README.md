@@ -66,7 +66,7 @@ Here is an example of a valid body for updating the contents of file through a *
 ```
 {
 	"user":"user1",
-	"id": 101,
+	"id": x,
 	"revision_number":1,
 	"name": "file1.txt",
 	"changes":[
