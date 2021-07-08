@@ -203,7 +203,7 @@ func (db *Database) GetChangesSinceRevision(id int, revisionNumber int) ([]obj.C
 	var changes []obj.Change
 
 	revs, err := conn.Query(
-		`SELECT DISTINCT changes.file, changes.rev_number, position, character
+		`SELECT DISTINCT changes.id, changes.file, changes.rev_number, position, character
 		FROM revisions
 			JOIN changes
 		WHERE changes.file = ? AND changes.rev_number > ?`, id, revisionNumber)
@@ -217,11 +217,12 @@ func (db *Database) GetChangesSinceRevision(id int, revisionNumber int) ([]obj.C
 	}
 
 	for next == nil {
+		var ID int
 		var fileID int
 		var revID int
 		var pos int
 		var char string
-		err = revs.Scan(&fileID, &revID, &pos, &char)
+		err = revs.Scan(&ID, &fileID, &revID, &pos, &char)
 		if err != nil {
 			return changes, err
 		}

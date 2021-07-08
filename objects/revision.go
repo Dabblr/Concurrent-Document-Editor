@@ -6,6 +6,7 @@ import "fmt"
 type Revision struct {
 	// The username of the user making the revision.
 	User string `json:"user"`
+	// TODO rename this to file ID
 	// The ID of the file.
 	ID int `json:"id"`
 	// The revision number.
